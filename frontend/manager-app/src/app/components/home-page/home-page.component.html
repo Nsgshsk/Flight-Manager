@@ -1,0 +1,111 @@
+<nz-layout style="height: 100%">
+  <nz-header>
+    <div class="brand">
+      <span nz-icon nzType="cloud" nzTheme="outline"></span>
+      <span style="font-family: Dancing Script">SkySync</span>
+    </div>
+  </nz-header>
+  <nz-content>
+    <main style="height: 100%">
+      <div nz-flex nzJustify="center" nzAlign="center" style="min-height: 100%">
+        <form nz-form [formGroup]="flightSearchForm" class="flight-search">
+          <div nz-row id="ticketInfo">
+            <nz-form-item nz-col id="ticketType">
+              <nz-form-control>
+                <nz-select
+                  formControlName="type"
+                  [nzOptions]="ticketTypes"
+                  nzBorderless
+                  style="min-width: 108px"
+                ></nz-select>
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-col id="ticketClass">
+              <nz-form-control>
+                <nz-select
+                  formControlName="class"
+                  [nzOptions]="ticketClasses"
+                  nzBorderless
+                  style="min-width: 108px"
+                ></nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-row nzGutter="8">
+            <div nz-col nz-flex id="flightDestinations">
+              <nz-form-item id="departureCity">
+                <nz-form-control>
+                  <input
+                    nzSize="large"
+                    placeholder="Where from?"
+                    nz-input
+                    formControlName="departureFrom"
+                    (ngModelChange)="onChangeDeparture($event)"
+                    [nzAutocomplete]="autoDeparture"
+                  />
+                  <nz-autocomplete
+                    [nzDataSource]="filteredDepartureCities"
+                    #autoDeparture
+                  ></nz-autocomplete>
+                </nz-form-control>
+              </nz-form-item>
+              <nz-form-item id="arrivalCity">
+                <nz-form-control>
+                  <input
+                    nzSize="large"
+                    placeholder="Where to?"
+                    nz-input
+                    formControlName="arrivalAt"
+                    (ngModelChange)="onChangeArrival($event)"
+                    [nzAutocomplete]="autoArrival"
+                  />
+                  <nz-autocomplete
+                    [nzDataSource]="filteredArrivalCities"
+                    #autoArrival
+                  ></nz-autocomplete>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div nz-col nz-flex id="flightDates">
+              <nz-form-item id="departureDate">
+                <nz-form-control>
+                  <nz-date-picker
+                    nzSize="large"
+                    [nzDisabledDate]="disabledStartDate"
+                    nzFormat="dd-MM-yyyy"
+                    formControlName="departureDate"
+                    nzPlaceHolder="Departure"
+                    (nzOnOpenChange)="handleStartOpenChange($event)"
+                  ></nz-date-picker>
+                </nz-form-control>
+              </nz-form-item>
+              <nz-form-item
+                *ngIf="
+                  this.flightSearchForm.controls['type'].value != 'one-way'
+                "
+                id="returnDate"
+              >
+                <nz-form-control>
+                  <nz-date-picker
+                    #endDatePicker
+                    nzSize="large"
+                    [nzDisabledDate]="disabledEndDate"
+                    nzFormat="dd-MM-yyyy"
+                    formControlName="returnDate"
+                    nzPlaceHolder="Return"
+                    (nzOnOpenChange)="handleEndOpenChange($event)"
+                  ></nz-date-picker>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <!-- Make autocomplete for destinations -->
+            <!-- Make date picker that is dynamic -->
+            <!-- Maybe think of implementing dynamic forms for Multi-city -->
+          </div>
+          <div id="A"></div>
+        </form>
+      </div>
+    </main>
+  </nz-content>
+  <nz-footer> </nz-footer>
+</nz-layout>
