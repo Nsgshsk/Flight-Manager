@@ -1,4 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import {
   FormGroup,
   FormBuilder,
@@ -21,7 +22,6 @@ import {
   NzDatePickerComponent,
   NzDatePickerModule,
 } from 'ng-zorro-antd/date-picker';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-home-page',

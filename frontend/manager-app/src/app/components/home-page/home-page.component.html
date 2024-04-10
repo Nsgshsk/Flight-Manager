@@ -98,11 +98,24 @@
                 </nz-form-control>
               </nz-form-item>
             </div>
-            <!-- Make autocomplete for destinations -->
-            <!-- Make date picker that is dynamic -->
             <!-- Maybe think of implementing dynamic forms for Multi-city -->
           </div>
-          <div id="A"></div>
+          <div nz-row nzJustify="center" id="Search">
+            <nz-form-item nz-col style="margin: 0%;">
+              <nz-form-control>
+                <button
+                  ngSkipHydration
+                  nz-button
+                  nzType="primary"
+                  nzSize="large"
+                  nzShape="round"
+                >
+                  <span nz-icon nzType="search" nzTheme="outline"></span>
+                  Search
+                </button>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
         </form>
       </div>
     </main>
