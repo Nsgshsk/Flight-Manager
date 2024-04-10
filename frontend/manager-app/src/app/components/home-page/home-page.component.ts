@@ -1,5 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
+
 import {
   FormGroup,
   FormBuilder,
@@ -7,49 +8,21 @@ import {
   Validators,
 } from '@angular/forms';
 
-import { NzLayoutModule } from 'ng-zorro-antd/layout';
-import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzSpaceModule } from 'ng-zorro-antd/space';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzCardModule } from 'ng-zorro-antd/card';
-import { NzFlexModule } from 'ng-zorro-antd/flex';
-import { NzFormModule } from 'ng-zorro-antd/form';
-import { NzSelectModule } from 'ng-zorro-antd/select';
-import { NzGridModule } from 'ng-zorro-antd/grid';
-import { NzAutocompleteModule } from 'ng-zorro-antd/auto-complete';
-import { NzInputModule } from 'ng-zorro-antd/input';
-import {
-  NzDatePickerComponent,
-  NzDatePickerModule,
-} from 'ng-zorro-antd/date-picker';
+import { NzDatePickerComponent } from 'ng-zorro-antd/date-picker';
+import { NgZorroModule } from '../shared/NgZorro.module';
 
 @Component({
   selector: 'app-home-page',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    NzLayoutModule,
-    NzIconModule,
-    NzSpaceModule,
-    NzButtonModule,
-    NzCardModule,
-    NzFlexModule,
-    NzFormModule,
-    NzSelectModule,
-    NzGridModule,
-    NzInputModule,
-    NzAutocompleteModule,
-    NzDatePickerModule,
-  ],
+  imports: [CommonModule, ReactiveFormsModule, NgZorroModule],
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.css',
 })
 export class HomePageComponent {
   // data
   ticketTypes = [
-    { label: 'Round trip', value: 'round-trip' },
     { label: 'One way', value: 'one-way' },
+    { label: 'Round trip', value: 'round-trip' },
     { label: 'Multi-city', value: 'multi-city', disabled: true },
   ];
   ticketClasses = [
@@ -58,6 +31,7 @@ export class HomePageComponent {
     { label: 'First', value: 'first' },
   ];
   cities = ['Sofia', 'Varna', 'Rome', 'London'];
+  now = new Date();
 
   flightSearchForm: FormGroup;
   filteredDepartureCities: string[] = [];
@@ -68,7 +42,7 @@ export class HomePageComponent {
   constructor(private fb: FormBuilder) {
     this.flightSearchForm = this.fb.group({
       type: [
-        'round-trip' as 'round-trip' | 'one-way',
+        'one-way' as 'one-way' | 'round-trip' | 'multi-city',
         {
           nonNullable: true,
           validators: [Validators.required],
@@ -94,6 +68,12 @@ export class HomePageComponent {
     });
     this.filteredDepartureCities = this.cities;
     this.filteredArrivalCities = this.cities;
+    this.now.setHours(0, 0, 0, 0);
+  }
+
+  onTypeChange(value: string) {
+    if (value == 'one-way' && this.flightSearchForm.controls['returnDate'].value)
+      this.flightSearchForm.controls['returnDate'].setValue(null);
   }
 
   onChangeDeparture(value: string) {
@@ -109,22 +89,26 @@ export class HomePageComponent {
   }
 
   disabledStartDate = (startValue: Date): boolean => {
+    const isBeforeNow = startValue < this.now;
     if (!startValue || !this.flightSearchForm.controls['returnDate'].value) {
-      return false;
+      return isBeforeNow;
     }
     return (
       startValue.getTime() >
-      this.flightSearchForm.controls['returnDate'].value.getTime()
+        this.flightSearchForm.controls['returnDate'].value.getTime() ||
+      isBeforeNow
     );
   };
 
   disabledEndDate = (endValue: Date): boolean => {
+    const isBeforeNow = endValue < this.now;
     if (!endValue || !this.flightSearchForm.controls['departureDate'].value) {
-      return false;
+      return isBeforeNow;
     }
     return (
       endValue.getTime() <=
-      this.flightSearchForm.controls['departureDate'].value.getTime()
+        this.flightSearchForm.controls['departureDate'].value.getTime() ||
+      isBeforeNow
     );
   };
 

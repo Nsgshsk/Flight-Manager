@@ -1,1 +1,48 @@
-<p>panel-page works!</p>
+<nz-layout style="height: 100%">
+  <nz-sider nzCollapsible nzWidth="200px" (nzCollapsedChange)="onSiderCollapse($event)">
+    <div class="logo">
+      <img
+        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACYAAAAmCAYAAACoPemuAAAACXBIWXMAAAsTAAALEwEAmpwYAAAEg0lEQVR4nO1YXWgcVRTeNsasSdqY3b130lqpSLH+gajgDwj+UEQEEYQ++INPVR9URBH6JiIqIgoWn3xQoYQK9kGsWkuDpgXBSiPNz9wzydJSlCra+kMt+3PO7OyVM5uZ3Jmd3cxmN1HBA/uwe++595vvnPOds5PJ/G//YRO2HpaAT0jALzP/Bhubq14jFb4hAH+XQFoCffCPgdlW1ANC4U4BOLEIJvwIqD605oAKUL3KZ0fhuTggH5TCat7RG9YEzLW2vjhkR2E9CVD4UXho1QEJu7JNAr4pFJ5NBkFnhMKXBZC9FEZ6ZnXQaN0nlbtDAn0sFdYSGPGYOWYwM6X7R07oSyUgBeuWU7mip3jyTmmzANotgH5IzB3AXzi35ELlSt5vKbzOfwgHH1nKL5rpDRqt14fsALotwjUlHXpy62mdZZfRufLlQtF7EugF/i4U7TPAv9YVHmHrMZ8dRaeTkxj/5MstwOsDn5FZPbpYjRUJdILDmJnUF0nAPwzf27plh9qxs2lKD4Z+U7qff1sqAHQLgDfxkuW4dxls/cp3pMbTeFJ6TgKdbFHe55kdMYc3xB5kHSd43E8Avhoyr/BtYy2d2hccutm/UGG5HTvWtB6K+0qg26XCbxJ85oNc8/cpWkil9qOn9EiDdpptocoVCbQ3CEXc8k51eyPUicx6wqY7Ynvbq33IDmApudQJONlHZvVoEqBN87ogAfe0rMwGsHdNH6HoxbZqz5UjFTktqutgu0oRth5m5ZaAF2IgIm2HtS3OiFA4ubzac+Vwgiv8K5aoJb6Ye11kv9brBeDjUuHPCUJ6TAC+Y/5mOdUHmgrKYHdZtc8tlC7jHEpI2gUB7r28hyWDFTpxj8KdfotRdMZY2xu/J6b2s21BRUPk3ieBiubFueNUv+RQrZSfceMF8RvnH89X/qVA7xtr58aKWjSdb6i9VPh6piMLwgt4Ife9qzPj2v+s26f18Nc1vrTELSRX1BsDF8t274nmFz7cdG5P1J7DO1PaUpimTwJgmXGt+z/1Tg5O4I3mPlZ7U0yFogNJ51mOe/eK1T7JNn5L5b79dR/Y0IS7I74eUXGF57lZJ50jFL5l5OWHXYHyDwT8Ttikh76q6ezh2m5zbcMR9/7I7GXTU63OSa326YHReHigTc+GC5M627ffK2e/8JgBZusI98mW8/5yat8xMF9IKUjqPcHv/Qc8FeTewOdefbOK5l5Har8SkzY+anYE/6I5fCV70AuLYniy5jNmVmrkDMCjhto/3RNglqJbjRIvSsBdwffBw54e+GwxlA02jnP/7Ert09oWW+eMMNSiDRuPSpteinUCx6zMFat9GhNLf+HNBq2CqYObMY830eZd3e6vKfqoZ7N9ArBjMVZ+GlPlreYeqfAxc/RmEbVsuqUnap9GMiSP1PFxOgRXfXBxqAzAoSETZ7tW+1aSIfgi1az+phWA7mTwCVNI92qfKBkK6xyuNPsbk3H09cCqvMmx/Fyh5zvxyc9XrxZAP/ZU7ZtMryw3uED8HrkWb3I6NWtaSx5A0zr8DXhnyGAhtIY/AAAAAElFTkSuQmCC"
+      />
+      <span *ngIf="showBrandName" style="font-family: Dancing Script">SkySync</span>
+    </div>
+    <ul nz-menu nzTheme="dark" nzMode="inline">
+      <li nz-menu-item>
+        <span nz-icon nzType="pie-chart"></span>
+        <span>Option 1</span>
+      </li>
+      <li nz-menu-item>
+        <span nz-icon nzType="desktop"></span>
+        <span>Option 2</span>
+      </li>
+      <li nz-submenu nzTitle="User" nzIcon="user">
+        <ul>
+          <li nz-menu-item>Tom</li>
+          <li nz-menu-item>Bill</li>
+          <li nz-menu-item>Alex</li>
+        </ul>
+      </li>
+      <li nz-submenu nzTitle="Team" nzIcon="team">
+        <ul>
+          <li nz-menu-item>Team 1</li>
+          <li nz-menu-item>Team 2</li>
+        </ul>
+      </li>
+      <li nz-menu-item>
+        <span nz-icon nzType="file"></span>
+        <span>File</span>
+      </li>
+    </ul>
+  </nz-sider>
+  <nz-layout style="height: 100%">
+    <nz-header></nz-header>
+    <nz-content>
+      <nz-breadcrumb>
+        <nz-breadcrumb-item>User</nz-breadcrumb-item>
+        <nz-breadcrumb-item>Bill</nz-breadcrumb-item>
+      </nz-breadcrumb>
+      <div class="inner-content">Bill is a cat.</div>
+    </nz-content>
+    <nz-footer>Ant Design ©2020 Implement By Angular</nz-footer>
+  </nz-layout>
+</nz-layout>
