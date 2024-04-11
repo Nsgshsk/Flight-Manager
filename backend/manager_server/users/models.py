@@ -12,9 +12,9 @@ class User(AbstractUser):
         (EMPLOYEE, "Employee")
     )
     
-    egn = models.CharField(max_length=10, unique=True, blank=False)
+    egn = models.CharField(max_length=10, unique=True)
     address = models.CharField(max_length=150, blank=True)
     phone_number = PhoneNumberField(max_lenght=10, region="BG", blank=True)
-    roles = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, blank=False)
+    roles = models.PositiveSmallIntegerField(choices=ROLE_CHOICES)
     
     REQUIRED_FIELDS = ["email", "egn"]
