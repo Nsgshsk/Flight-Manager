@@ -25,7 +25,7 @@ class Users(APIView):
     # Retrieve all users without admin
     def get(self, request):
         serializer = UserSerializer(User.objects.exclude(role=1), many=True)
-        return Response(data=serializer, status=status.HTTP_200_OK)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
     
     # Create new user
     def post(self, request):

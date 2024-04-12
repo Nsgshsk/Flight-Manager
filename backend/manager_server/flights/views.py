@@ -14,7 +14,7 @@ class Flights(APIView):
     
     def get(self, request):
         serializer = FlightSerializer(Flight.objects.all(), many=True)
-        return Response(data=serializer, status=status.HTTP_200_OK)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
     
     def post(self, request):
         serializer = FlightSerializer(data=request.data)
@@ -49,7 +49,7 @@ class Planes(APIView):
     
     def get(self, request):
         serializer = PlaneSerializer(Plane.objects.all(), many=True)
-        return Response(data=serializer, status=status.HTTP_200_OK)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
     
     def post(self, request):
         serializer = PlaneSerializer(data=request.data)

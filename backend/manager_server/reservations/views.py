@@ -20,7 +20,7 @@ class Reservations(APIView):
     
     def get(self, request):
         serializer = ReservationSerializer(Reservation.objects.all(), many=True)
-        return Response(data=serializer, status=status.HTTP_200_OK)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
     
     def post(self, request):
         customer_data = request.data['customer']
@@ -34,13 +34,15 @@ class Reservations(APIView):
         for reservation_data in reservation_data_list:
             reservation_data['customer'] = customer.validated_data['id']
             reservation = ReservationSerializer(reservation_data)
-            if reservation_data.is_valid():
-                reservation_data.save()
+            if reservation.is_valid():
+                reservation.save()
             else:
                 CustomerRequest.objects.filter(pk=customer.validated_data['id']).delete()
                 return Response(data=reservation.errors, status=status.HTTP_400_BAD_REQUEST)
         
-        return Response(data={'message': 'Request sent!'}, status=status.HTTP_201_CREATED)  
+        email_handle = CustomerRequests()
+        response = email_handle.post(request)
+        return response
     
     def delete(self, request):
         serializer = CustomerRequestSerializer(request.data)
@@ -53,8 +55,16 @@ class Reservations(APIView):
 class CustomerRequests(APIView):
     permission_classes = [IsAuthenticated]
     
-    def post(self, request):
+    def get(self, request):
         serializer = CustomerRequestSerializer(request.data)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+    
+    def post(self, request):
+        customer_data = request.data.get('customer', None)
+        if customer_data is None:
+            customer_data = request.data
+        
+        serializer = CustomerRequestSerializer(customer_data)
         if serializer.is_valid() and serializer.validated_data['status'] == 1:
             customer = CustomerRequest.objects.filter(pk=serializer.validated_data['id']).first()
             flight = customer.flight
@@ -74,12 +84,31 @@ class CustomerRequests(APIView):
             """
             reservation_list = customer.reservation_set.all()
             
-            all_seats = flight.economy_seats + flight.business_seats + flight.first_seats
-            left_seats = all_seats - reservation_list.count()
+            left_economy_seats = flight.all_seats() - reservation_list.filter(type=1).count()
+            left_business_seats = flight.all_seats() - reservation_list.filter(type=2).count()
+            left_first_seats = flight.all_seats() - reservation_list.filter(type=3).count()
             
-            if left_seats < 0:
-                customer.status = 3
+            type = 0
+            if left_economy_seats < 0:
+                type = 1
+            elif left_business_seats < 0:
+                type = 2
+            elif left_first_seats < 0:
+                type = 3
                 
+            if type > 0:
+                customer.status = 3
+                message = f"""
+                Dear Customer,
+                
+                We regret to inform you that we are unable to confirm your reservation for the flight to {flight.arrival_airport} on {flight.departure_datetime} due to the unavailability of free seats in the selected seat types. Unfortunately, there are not enough seats in the {TYPE_CHOICES[type]} class to accommodate all requested passengers on the plane.
+                We understand the inconvenience this may cause and apologize for any disruption to your travel plans. Our team has made every effort to secure your preferred seat type; however, the current capacity constraints prevent us from fulfilling your reservation.
+                As a result, we have canceled your reservation for the flight. Rest assured, any payment made for the reservation will be fully refunded to the original payment method used during the booking process. The refund process may take some time to complete, and we appreciate your patience in this matter.
+                We sincerely apologize for any inconvenience this may have caused and hope to have the opportunity to serve you on a future flight. If you have any questions or require further assistance, please do not hesitate to contact our customer service team at [Customer Service Contact Information].
+                Thank you for your understanding.
+                
+                Warm regards,
+                [Your Airline Name]"""
             
             for reservation in reservation_list:
                 type = reservation.type
