@@ -18,6 +18,9 @@ class CustomerRequest(models.Model):
 
 class Nationality(models.Model):
     name = models.CharField(max_length=150)
+    
+    class Meta:
+        ordering = ('name')
 
 class Reservation(models.Model):
     ECONOMY = 1

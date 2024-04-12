@@ -3,7 +3,6 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from django.contrib.auth.password_validation import validate_password
 from users.validators import EgnValidator
-from django.core.exceptions import ValidationError
 
 from users.models import User
 
@@ -32,7 +31,7 @@ class UserSerializer(serializers.ModelSerializer):
     
     def validate_egn(self, value):
         if not EgnValidator.validate_egn(value):
-            raise ValidationError('Egn is not valid')
+            raise serializers.ValidationError('Egn is not valid')
         return value
     
     def create(self, validated_data):

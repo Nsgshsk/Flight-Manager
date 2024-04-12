@@ -21,7 +21,9 @@ class Flight(models.Model):
     departure_datetime = models.DateTimeField()
     arrival_datetime = models.DateTimeField()
     plane = models.ForeignKey(Plane, on_delete=models.SET_NULL, null=True)
-    pilot_name = models.CharField(max_length=200)
+    pilot_name = models.CharField(max_length=200, blank=True)
+    
+    # Free seats on plane
     economy_seats = models.PositiveSmallIntegerField(default=0)
     business_seats = models.PositiveSmallIntegerField(default=0)
     first_seats = models.PositiveSmallIntegerField(default=0)

@@ -10,23 +10,38 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+from datetime import timedelta
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-mw814@z+3awhbj3qyo@2j&db#lm&&_y%vqx5-sdgkt8%aa_#vs'
+SECRET_KEY = """
+-----BEGIN RSA PRIVATE KEY-----
+MIIBOwIBAAJBAKS92v0NF29jFg6NRuxeaIsBQ7FzEkBBIKevFhjCmuXvw7Dubtqz
+kBsn8RI/BYCMJOOQZGLJkUsgxRrNLm6o7nMCAwEAAQJBAJVMHecQ8zkWAkpDzI+v
+62x2Q+PQFi03GKH+sbbUvk48a9L21T7BuL29JCDqD7CooeSA9n+7ImNkMWmE7Pki
+spECIQDc8K2qGmD2MM+qpuyBPK28eLvcYFyHnxYNLhBIhf7a+wIhAL7iNNzY8ogf
++3vuV0J5bUT8fOP4b7FAzvP8PqpSyODpAiEAy5akEIj6LCHSWmgyquwlE/UU9v98
+hCReB4sYyhtfOp0CIBIrOdjjlYI7eRZ8wzWClVIBrmmMliULBCfZFKXlp1UxAiAo
+bl0uefVo67m7oOADg8BnT2r3qFyAhLUQGBZxLTbreQ==
+-----END RSA PRIVATE KEY-----"""
+
+PUBLIC_KEY = """
+-----BEGIN PUBLIC KEY-----
+MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAKS92v0NF29jFg6NRuxeaIsBQ7FzEkBB
+IKevFhjCmuXvw7DubtqzkBsn8RI/BYCMJOOQZGLJkUsgxRrNLm6o7nMCAwEAAQ==
+-----END PUBLIC KEY-----"""
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost',]
 
 # Application definition
 
@@ -36,6 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    "whitenoise.runserver_nostatic"
     'django.contrib.staticfiles',
     "corsheaders",
     'rest_framework',
@@ -60,6 +76,11 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ALLOWED_ORIGINS  = [
+    'http://localhost:4200',
+]
+
 ROOT_URLCONF = 'manager_server.urls'
 
 TEMPLATES = [
@@ -80,20 +101,78 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'manager_server.wsgi.application'
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'mail_server'
+EMAIL_PORT = 25
+EMAIL_USE_TLS = False
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+DEFAULT_FROM_EMAIL = 'your_email@your_domain.com'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'news_source_development',
+        'USER': 'dev_app',
+        'PASSWORD': 'developer@123',
+        'HOST': 'localhost',
+        'PORT': '5432'
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
+
+AUTH_USER_MODEL = 'users.User'
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend'
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "UPDATE_LAST_LOGIN": False,
+
+    "ALGORITHM": "RS256",
+    "SIGNING_KEY": SECRET_KEY,
+    "VERIFYING_KEY": PUBLIC_KEY,
+    "AUDIENCE": None,
+    "ISSUER": None,
+
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
+    "USER_ID_FIELD": "id",
+    "USER_ID_CLAIM": "user_id",
+
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+    "TOKEN_TYPE_CLAIM": "token_type",
+
+    "JTI_CLAIM": "jti",
+
+    "SLIDING_TOKEN_REFRESH_EXP_CLAIM": "refresh_exp",
+    "SLIDING_TOKEN_LIFETIME": timedelta(minutes=5),
+    "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
+}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -110,7 +189,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
@@ -122,10 +200,12 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
+STATIC_ROOT = BASE_DIR / "staticfiles"
+# STATIC_HOST = os.environ.get("DJANGO_STATIC_HOST", "")
+# STATIC_URL = STATIC_HOST + "/static/"
 STATIC_URL = 'static/'
 
 # Default primary key field type
