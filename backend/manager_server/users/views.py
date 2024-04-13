@@ -1,3 +1,5 @@
+from django.core.paginator import Paginator
+
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -20,11 +22,18 @@ class Users(APIView):
     This view handles requests about users.
     It only accepts users with UsersPermissions.
     """
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated, UsersPermissions]
     
     # Retrieve all users without admin
     def get(self, request):
-        serializer = UserSerializer(User.objects.exclude(role=1), many=True)
+        users = User.objects.exclude(role=1)
+
+        page_number = self.request.query_params.get('page_number ', 1)
+        page_size = self.request.query_params.get('page_size ', 10)
+
+        paginator = Paginator(users , page_size)
+        
+        serializer = UserSerializer(paginator.page(page_number), many=True, context={'request':request})
         return Response(data=serializer.data, status=status.HTTP_200_OK)
     
     # Create new user
@@ -44,7 +53,7 @@ class Users(APIView):
             return Response(data=serializer.data, status=status.HTTP_400_BAD_REQUEST)
         
         user = User.objects.get(pk=request.data['id'])
-        serializer = UserSerializer(user, data=request.data)
+        serializer = UserSerializer(user, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(data=serializer.data, status=status.HTTP_202_ACCEPTED)

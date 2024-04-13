@@ -1,3 +1,5 @@
+from django.core.paginator import Paginator
+
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -18,8 +20,10 @@ class Reservations(APIView):
         | (IsAuthenticated & ReservationsPermissions)
     ]
     
-    def get(self, request):
-        serializer = ReservationSerializer(Reservation.objects.all(), many=True)
+    def get(self, request, customer_id):
+        reservations = Reservation.objects.filter(customer_request__id=customer_id)
+        
+        serializer = ReservationSerializer(reservations, many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
     
     def post(self, request):
@@ -29,6 +33,9 @@ class Reservations(APIView):
         customer = CustomerRequestSerializer(customer_data)
         if not customer.is_valid():
             return Response(data=customer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        if len(reservation_data_list) > 10:
+            return Response(data={'message': 'Too many reservations! (The max is 10.)'}, status=status.HTTP_400_BAD_REQUEST)
         
         customer.save()
         for reservation_data in reservation_data_list:
@@ -41,7 +48,7 @@ class Reservations(APIView):
                 return Response(data=reservation.errors, status=status.HTTP_400_BAD_REQUEST)
         
         email_handle = CustomerRequests()
-        response = email_handle.post(request)
+        response = email_handle.confirm_request(request)
         return response
     
     def delete(self, request):
@@ -56,10 +63,17 @@ class CustomerRequests(APIView):
     permission_classes = [IsAuthenticated]
     
     def get(self, request):
-        serializer = CustomerRequestSerializer(request.data)
+        customers = CustomerRequest.objects.all()
+        
+        page_number = self.request.query_params.get('page_number ', 1)
+        page_size = self.request.query_params.get('page_size ', 10)
+
+        paginator = Paginator(customers , page_size)
+        
+        serializer = CustomerRequestSerializer(paginator.page(page_number), many=True, context={'request': request})
         return Response(data=serializer.data, status=status.HTTP_200_OK)
     
-    def post(self, request):
+    def confirm_request(self, request):
         customer_data = request.data.get('customer', None)
         if customer_data is None:
             customer_data = request.data

@@ -14,6 +14,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 
 @NgModule({
   exports: [
@@ -31,6 +32,7 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
     NzDatePickerModule,
     NzBreadCrumbModule,
     NzMenuModule,
+    NzCheckboxModule,
   ],
 })
 export class NgZorroModule {}

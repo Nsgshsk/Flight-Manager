@@ -1,3 +1,5 @@
+from django.core.paginator import Paginator
+
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -13,7 +15,14 @@ class Flights(APIView):
     permission_classes = [(IsAuthenticated & FlightsPermissions) | (AllowAny & AnnoFlightsPermissions)]
     
     def get(self, request):
-        serializer = FlightSerializer(Flight.objects.all(), many=True)
+        flights = Flight.objects.all()
+        
+        page_number = self.request.query_params.get('page_number ', 1)
+        page_size = self.request.query_params.get('page_size ', 10)
+
+        paginator = Paginator(flights, page_size)
+        
+        serializer = FlightSerializer(paginator.page(page_number), many=True, context={'request': request})
         return Response(data=serializer.data, status=status.HTTP_200_OK)
     
     def post(self, request):
@@ -29,7 +38,7 @@ class Flights(APIView):
             return Response(data=serializer.data, status=status.HTTP_400_BAD_REQUEST)
         
         flight = Flight.objects.get(pk=request.data['id'])
-        serializer = FlightSerializer(flight, data=request.data)
+        serializer = FlightSerializer(flight, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(data=serializer.data, status=status.HTTP_202_ACCEPTED)
@@ -48,7 +57,14 @@ class Planes(APIView):
     permission_classes = [IsAuthenticated, FlightsPermissions]
     
     def get(self, request):
-        serializer = PlaneSerializer(Plane.objects.all(), many=True)
+        planes = Plane.objects.all()
+        
+        page_number = self.request.query_params.get('page_number ', 1)
+        page_size = self.request.query_params.get('page_size ', 10)
+
+        paginator = Paginator(planes, page_size)
+        
+        serializer = FlightSerializer(paginator.page(page_number), many=True, context={'request': request})
         return Response(data=serializer.data, status=status.HTTP_200_OK)
     
     def post(self, request):
@@ -64,7 +80,7 @@ class Planes(APIView):
             return Response(data=serializer.data, status=status.HTTP_400_BAD_REQUEST)
         
         plane = Plane.objects.get(pk=request.data['id'])
-        serializer = PlaneSerializer(plane, data=request.data)
+        serializer = PlaneSerializer(plane, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(data=serializer.data, status=status.HTTP_202_ACCEPTED)

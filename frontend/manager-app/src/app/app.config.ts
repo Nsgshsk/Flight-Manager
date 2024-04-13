@@ -8,7 +8,12 @@ import { registerLocaleData } from '@angular/common';
 import bg from '@angular/common/locales/bg';
 import { FormsModule } from '@angular/forms';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { JwtModule } from '@auth0/angular-jwt';
+
+export function tokenGetter() {
+  return localStorage.getItem("access_token");
+}
 
 registerLocaleData(bg);
 
@@ -19,6 +24,19 @@ export const appConfig: ApplicationConfig = {
     provideNzI18n(bg_BG),
     importProvidersFrom(FormsModule),
     provideAnimationsAsync(),
-    provideHttpClient(),
+    importProvidersFrom(
+      JwtModule.forRoot({
+        config: {
+          tokenGetter: tokenGetter,
+          allowedDomains: ['http://127.0.0.1:8000/'],
+          disallowedRoutes: ["http://127.0.0.1:8000/api/auth/token/",
+          "http://127.0.0.1:8000/api/auth/token/refresh/",
+          "http://127.0.0.1:8000/api/auth/register/"],
+        },
+      })
+    ),
+    provideHttpClient(
+      withInterceptorsFromDi(),
+    ),
   ],
 };

@@ -22,7 +22,7 @@ export class HomePageComponent {
   // data
   ticketTypes = [
     { label: 'One way', value: 'one-way' },
-    { label: 'Round trip', value: 'round-trip' },
+    { label: 'Round trip', value: 'round-trip', disabled: true },
     { label: 'Multi-city', value: 'multi-city', disabled: true },
   ];
   ticketClasses = [
