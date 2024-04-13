@@ -53,6 +53,53 @@ class Flights(APIView):
         else:
             return Response({'message': 'Invalid request!'}, status=status.HTTP_400_BAD_REQUEST)
 
+class AnnoFlights(APIView):
+    permission_classes = [AllowAny,]
+    
+    def get(self, request):
+        params = self.request.query_params
+        
+        departure = params.get('depratureFrom', None)
+        if departure is None:
+            return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+        
+        flights = Flight.objects.filter(departure_airport__city=departure)
+        
+        seat_class = params.get('class', None)
+        arrivalAt = params.get('arrivalAt', None)
+        departureDate = params.get('departureDate', None)
+        
+        if seat_class is not None:
+            if seat_class == 'economy':
+                flights = flights.filter(economy_seats__gt=0)
+            elif seat_class == 'business':
+                flights = flights.filter(business_seats__gt=0)
+            elif seat_class == 'first':
+                flights = flights.filter(first_seats__gt=0)
+        
+        if arrivalAt is not None:
+            flights = flights.filter(arrival_airport__city=arrivalAt)
+        
+        if departureDate is not None:
+            flights = flights.filter(departure_datetime__gte=departureDate)
+        
+        page_number = params.get('page_number ', 1)
+        page_size = params.query_params.get('page_size ', 10)
+
+        paginator = Paginator(flights, page_size)
+        
+        serializer = FlightSerializer(paginator.page(page_number), many=True, context={'request': request})
+        return Response(data=serializer.data, status=status.HTTP_200_OK) 
+
+class FlightDetails(APIView):
+    permission_classes = [AllowAny,]
+    
+    def get(self, request, id):
+        flight = Flight.objects.get(pk=id)
+        
+        serializer = FlightSerializer(flight)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+
 class Planes(APIView):
     permission_classes = [IsAuthenticated, FlightsPermissions]
     

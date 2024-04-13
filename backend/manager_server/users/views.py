@@ -46,13 +46,22 @@ class Users(APIView):
             return Response({'message': 'Account created succesfully!'}, status=status.HTTP_201_CREATED)
         else:
             return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class UserDetails(APIView):
+    permission_classes = [IsAuthenticated, UsersPermissions]
     
-    # Edit user information (partial)
-    def patch(self, request):
-        if request.data['id'] is None:
-            return Response(data=serializer.data, status=status.HTTP_400_BAD_REQUEST)
+    def get(self, request, id):
+        user = User.objects.get(pk=id)
         
-        user = User.objects.get(pk=request.data['id'])
+        if user is not None:
+            serializer = UserSerializer(user)
+            return Response(data=serializer.data, status=status.HTTP_202_ACCEPTED) 
+        else:
+            return Response({'message': 'Invalid request!'}, status=status.HTTP_400_BAD_REQUEST)
+        
+    # Edit user information (partial)
+    def patch(self, request, id):
+        user = User.objects.get(pk=id)
         serializer = UserSerializer(user, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -61,10 +70,9 @@ class Users(APIView):
             return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     # Delete user
-    def delete(self, request):
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            User.objects.filter(pk=serializer.validated_data['id']).delete()
+    def delete(self, request, id):
+        if User.objects.contains(pk=id):
+            User.objects.get(pk=id).delete()
             return Response({'message': 'Account deleted!'}, status=status.HTTP_204_NO_CONTENT)
         else:
             return Response({'message': 'Invalid request!'}, status=status.HTTP_400_BAD_REQUEST)

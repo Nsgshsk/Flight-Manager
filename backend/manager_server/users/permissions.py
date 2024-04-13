@@ -32,3 +32,7 @@ class AnnoReservationsPermissions(BasePermission):
         if request.method not in SAFE_METHODS:
             return request.method not in ['PATCH', 'DELETE']
         return False
+
+class AnnoCusomerRequestPermissions(BasePermission):
+    def has_permission(self, request, view):
+        return request.method == 'POST'

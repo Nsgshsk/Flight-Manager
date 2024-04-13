@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from users.permissions import AnnoReservationsPermissions, ReservationsPermissions
+from users.permissions import AnnoReservationsPermissions, ReservationsPermissions, AnnoCusomerRequestPermissions
 
 from reservations.models import CustomerRequest, Nationality, Reservation
 from reservations.serializers import CustomerRequestSerializer, NationalitySerializer, ReservationSerializer
@@ -48,7 +48,7 @@ class Reservations(APIView):
                 return Response(data=reservation.errors, status=status.HTTP_400_BAD_REQUEST)
         
         email_handle = CustomerRequests()
-        response = email_handle.confirm_request(request)
+        response = email_handle.post(request)
         return response
     
     def delete(self, request):
@@ -60,7 +60,7 @@ class Reservations(APIView):
             return Response(data={'message': 'Invalid request!'}, status=status.HTTP_400_BAD_REQUEST)
 
 class CustomerRequests(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated | AnnoCusomerRequestPermissions]
     
     def get(self, request):
         customers = CustomerRequest.objects.all()
@@ -73,7 +73,7 @@ class CustomerRequests(APIView):
         serializer = CustomerRequestSerializer(paginator.page(page_number), many=True, context={'request': request})
         return Response(data=serializer.data, status=status.HTTP_200_OK)
     
-    def confirm_request(self, request):
+    def post(self, request):
         customer_data = request.data.get('customer', None)
         if customer_data is None:
             customer_data = request.data
