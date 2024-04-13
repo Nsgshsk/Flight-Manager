@@ -19,7 +19,7 @@ class UserSerializer(serializers.ModelSerializer):
             'egn',
             'address',
             'phone_number',
-            'roles'
+            'role'
         ]
         extra_kwargs = {
             'password': { 'write_only': True },

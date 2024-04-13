@@ -51,7 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    "whitenoise.runserver_nostatic"
+    "whitenoise.runserver_nostatic",
     'django.contrib.staticfiles',
     "corsheaders",
     'rest_framework',
@@ -102,12 +102,11 @@ TEMPLATES = [
 WSGI_APPLICATION = 'manager_server.wsgi.application'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'mail_server'
-EMAIL_PORT = 25
-EMAIL_USE_TLS = False
+EMAIL_HOST = '127.0.0.1'
 EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
-DEFAULT_FROM_EMAIL = 'your_email@your_domain.com'
+EMAIL_PORT = 1025
+EMAIL_USE_TLS = False
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
@@ -123,8 +122,8 @@ STORAGES = {
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'news_source_development',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'manager_development',
         'USER': 'dev_app',
         'PASSWORD': 'developer@123',
         'HOST': 'localhost',

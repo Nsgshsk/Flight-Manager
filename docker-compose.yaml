@@ -1,0 +1,26 @@
+services:
+  database:
+    image: postgres:bookworm
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: manager_development
+      POSTGRES_USER: dev_app
+      POSTGRES_PASSWORD: developer@123
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+  mail_server:
+    image: sj26/mailcatcher:latest
+    restart: always
+    ports:
+      - "1080:1080"
+      - "1025:1025"
+volumes:
+  db_data:
+    driver: local # Define the driver and options under the volume name
+    driver_opts:
+      type: none
+      device: ./data/db_data
+      o: bind

@@ -2,15 +2,15 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from rest_framework.permissions import IsAuthenticated
-from users.permissions import FlightsPermissions
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from users.permissions import FlightsPermissions, AnnoFlightsPermissions
 
 from flights.models import Flight, Plane, PlaneType, Airport
 from flights.serializers import FlightSerializer, PlaneSerializer, PlaneTypeSerializer, AirportSerializer
 
 # Create your views here.
 class Flights(APIView):
-    permission_classes = [IsAuthenticated, FlightsPermissions]
+    permission_classes = [(IsAuthenticated & FlightsPermissions) | (AllowAny & AnnoFlightsPermissions)]
     
     def get(self, request):
         serializer = FlightSerializer(Flight.objects.all(), many=True)

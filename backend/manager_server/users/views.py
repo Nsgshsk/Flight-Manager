@@ -20,7 +20,7 @@ class Users(APIView):
     This view handles requests about users.
     It only accepts users with UsersPermissions.
     """
-    permission_classes = [IsAuthenticated, UsersPermissions]
+    permission_classes = [AllowAny]
     
     # Retrieve all users without admin
     def get(self, request):

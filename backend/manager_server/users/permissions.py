@@ -12,6 +12,12 @@ class FlightsPermissions(BasePermission):
             return True
         return request.user.role == 1
 
+class AnnoFlightsPermissions(BasePermission):
+    def has_permission(self, request, view):
+        if request.method in SAFE_METHODS:
+            return True
+        return False
+
 class ReservationsPermissions(BasePermission):
     def has_permission(self, request, view):
         if request.method in SAFE_METHODS:

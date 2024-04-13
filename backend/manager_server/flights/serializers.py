@@ -5,12 +5,13 @@ class PlaneTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = PlaneType
         fields = [
+            'id',
             'iata_code',
             'name'
         ]
 
 class PlaneSerializer(serializers.ModelSerializer):
-    type = serializers.PrimaryKeyRelatedField(queryset=PlaneType.objects.all())
+    type = serializers.SlugRelatedField(slug_field='iata_code', queryset=PlaneType.objects.all())
     
     class Meta:
         model = Plane
@@ -23,6 +24,7 @@ class AirportSerializer(serializers.ModelSerializer):
     class Meta:
         model = Airport
         fields = [
+            'id',
             'iata_code',
             'city',
             'name',
