@@ -21,14 +21,14 @@ import { NgZorroModule } from '../shared/NgZorro.module';
 export class HomePageComponent {
   // data
   ticketTypes = [
-    { label: 'One way', value: 'one-way' },
-    { label: 'Round trip', value: 'round-trip', disabled: true },
-    { label: 'Multi-city', value: 'multi-city', disabled: true },
+    { label: 'One way', value: 1 },
+    { label: 'Round trip', value: 2, disabled: true },
+    { label: 'Multi-city', value: 3, disabled: true },
   ];
   ticketClasses = [
-    { label: 'Economy', value: 'economy' },
-    { label: 'Business', value: 'business' },
-    { label: 'First', value: 'first' },
+    { label: 'Economy', value: 1 },
+    { label: 'Business', value: 2 },
+    { label: 'First', value: 3 },
   ];
   cities = ['Sofia', 'Varna', 'Rome', 'London'];
   now = new Date();
@@ -42,14 +42,14 @@ export class HomePageComponent {
   constructor(private fb: FormBuilder) {
     this.flightSearchForm = this.fb.group({
       type: [
-        'one-way' as 'one-way' | 'round-trip' | 'multi-city',
+        1 as 1 | 2 | 3,
         {
           nonNullable: true,
           validators: [Validators.required],
         },
       ],
       class: [
-        'economy' as 'economy' | 'business' | 'first',
+        1 as 1 | 2 | 3,
         {
           nonNullable: true,
           validators: [Validators.required],
@@ -71,8 +71,8 @@ export class HomePageComponent {
     this.now.setHours(0, 0, 0, 0);
   }
 
-  onTypeChange(value: string) {
-    if (value == 'one-way' && this.flightSearchForm.controls['returnDate'].value)
+  onTypeChange(value: number) {
+    if (value == 1 && this.flightSearchForm.controls['returnDate'].value)
       this.flightSearchForm.controls['returnDate'].setValue(null);
   }
 

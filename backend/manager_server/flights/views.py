@@ -32,23 +32,33 @@ class Flights(APIView):
             return Response({'message': 'Flight created succesfully!'}, status=status.HTTP_201_CREATED)
         else:
             return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class FlightDetails(APIView):
+    permission_classes = [(IsAuthenticated & FlightsPermissions) | (AllowAny & AnnoFlightsPermissions)]
     
-    def patch(self, request):
-        if request.data['id'] is None:
-            return Response(data=serializer.data, status=status.HTTP_400_BAD_REQUEST)
+    def get(self, request, id):
+        flight = Flight.objects.get(pk=id)
         
-        flight = Flight.objects.get(pk=request.data['id'])
-        serializer = FlightSerializer(flight, data=request.data, partial=True)
+        serializer = FlightSerializer(flight)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+    
+    def patch(self, request, id):
+        flight = Flight.objects.get(pk=id)
+        
+        if flight is None:
+            return Response({'message': 'Invalid request!'}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = PlaneSerializer(flight, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(data=serializer.data, status=status.HTTP_202_ACCEPTED)
         else:
             return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-    def delete(self, request):
-        serializer = FlightSerializer(data=request.data)
-        if serializer.is_valid():
-            Flight.objects.filter(pk=serializer.validated_data['id']).delete()
+    def delete(self, request, id):
+        plane = Flight.objects.get(pk=id)
+        if plane is not None:
+            plane.delete()
             return Response({'message': 'Flight deleted!'}, status=status.HTTP_204_NO_CONTENT)
         else:
             return Response({'message': 'Invalid request!'}, status=status.HTTP_400_BAD_REQUEST)
@@ -70,11 +80,11 @@ class AnnoFlights(APIView):
         departureDate = params.get('departureDate', None)
         
         if seat_class is not None:
-            if seat_class == 'economy':
+            if seat_class == 1:
                 flights = flights.filter(economy_seats__gt=0)
-            elif seat_class == 'business':
+            elif seat_class == 2:
                 flights = flights.filter(business_seats__gt=0)
-            elif seat_class == 'first':
+            elif seat_class == 3:
                 flights = flights.filter(first_seats__gt=0)
         
         if arrivalAt is not None:
@@ -91,7 +101,7 @@ class AnnoFlights(APIView):
         serializer = FlightSerializer(paginator.page(page_number), many=True, context={'request': request})
         return Response(data=serializer.data, status=status.HTTP_200_OK) 
 
-class FlightDetails(APIView):
+class AnnoFlightDetails(APIView):
     permission_classes = [AllowAny,]
     
     def get(self, request, id):
@@ -121,12 +131,25 @@ class Planes(APIView):
             return Response({'message': 'Plane created succesfully!'}, status=status.HTTP_201_CREATED)
         else:
             return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class PlaneDetails(APIView):
+    permission_classes = [IsAuthenticated, FlightsPermissions]
     
-    def patch(self, request):
-        if request.data['id'] is None:
-            return Response(data=serializer.data, status=status.HTTP_400_BAD_REQUEST)
+    def get(self, request, id):
+        plane = Plane.objects.get(pk=id)
         
-        plane = Plane.objects.get(pk=request.data['id'])
+        if plane is None:
+            return Response({'message': 'Invalid request!'}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = PlaneSerializer(plane)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+    
+    def patch(self, request, id):
+        plane = Plane.objects.get(pk=id)
+        
+        if plane is None:
+            return Response({'message': 'Invalid request!'}, status=status.HTTP_400_BAD_REQUEST)
+
         serializer = PlaneSerializer(plane, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -134,14 +157,15 @@ class Planes(APIView):
         else:
             return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-    def delete(self, request):
-        serializer = PlaneSerializer(data=request.data)
-        if serializer.is_valid():
-            Flight.objects.filter(pk=serializer.validated_data['id']).delete()
+    def delete(self, request, id):
+        flight = Flight.objects.get(pk=id)
+        if flight is not None:
+            flight.delete()
             return Response({'message': 'Plane deleted!'}, status=status.HTTP_204_NO_CONTENT)
         else:
             return Response({'message': 'Invalid request!'}, status=status.HTTP_400_BAD_REQUEST)
-   
+
+
 class PlaneTypes(APIView):
     permission_classes = [IsAuthenticated, FlightsPermissions]
     

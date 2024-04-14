@@ -2,7 +2,7 @@ from django.urls import path
 
 from rest_framework_simplejwt.views import TokenRefreshView, TokenBlacklistView
 
-from users.views import Users, ObtainTokenPair
+from users.views import Users, ObtainTokenPair, UserDetails
 
 urlpatterns = [
     # Auth views
@@ -12,4 +12,5 @@ urlpatterns = [
     
     # Admins only
     path('users/', Users.as_view()),
+    path('users/<int: id>/', UserDetails.as_view()),
 ]
