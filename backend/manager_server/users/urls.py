@@ -12,5 +12,5 @@ urlpatterns = [
     
     # Admins only
     path('users/', Users.as_view()),
-    path('users/<int: id>/', UserDetails.as_view()),
+    path('users/<int:id>/', UserDetails.as_view()),
 ]

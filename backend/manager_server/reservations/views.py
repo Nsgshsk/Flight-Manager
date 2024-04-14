@@ -57,11 +57,10 @@ class CustomerRequestDetails(APIView):
     permission_classes = [(IsAuthenticated & ReservationsPermissions) | (AllowAny & AnnoCusomerRequestPermissions)]
     
     def get(self, request, id):
-        customer = CustomerRequest.objects.get(pk=id)
-        
-        if customer is None:
+        try:
+            customer = CustomerRequest.objects.get(pk=id)
+        except:
             return Response(data={'message': 'Invalid request!'}, status=status.HTTP_400_BAD_REQUEST)
-        
         
         customer_serializer = CustomerRequestSerializer(customer)
         
@@ -73,9 +72,9 @@ class CustomerRequestDetails(APIView):
         return Response(data=response, status=status.HTTP_200_OK)
     
     def post(self, request, id):
-        customer = CustomerRequest.objects.get(pk=id)
-        
-        if customer is None:
+        try:
+            customer = CustomerRequest.objects.get(pk=id)
+        except:
             return Response(data={'message': 'Invalid request!'}, status=status.HTTP_400_BAD_REQUEST)
 
         if customer.status == 1:
@@ -157,15 +156,18 @@ class CustomerRequestDetails(APIView):
             return Response({'message': 'Invalid request!'}, status=status.HTTP_400_BAD_REQUEST)
     
     def delete(self, request, id):
-        customer = CustomerRequest.objects.get(pk=id)
-        if customer is not None:
-            customer.delete()
-            return Response(data={'message': 'Request deleted!'}, status=status.HTTP_204_NO_CONTENT)
-        else:
+        try:
+            customer = CustomerRequest.objects.get(pk=id)
+        except:
             return Response(data={'message': 'Invalid request!'}, status=status.HTTP_400_BAD_REQUEST)
+
+        customer.delete()
+        return Response(data={'message': 'Request deleted!'}, status=status.HTTP_204_NO_CONTENT)
 
 class Nationalities(APIView):
     permission_classes = [AllowAny]
+    serializer_class = NationalitySerializer
+    
     def get(self, request):
         serializer = NationalitySerializer(Nationality.objects.all(), many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK)

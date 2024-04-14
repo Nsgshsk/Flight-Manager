@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     "users",
     "flights",
     "reservations",
+    "drf_spectacular",
 ]
 
 MIDDLEWARE = [
@@ -143,6 +144,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 SIMPLE_JWT = {
@@ -187,6 +189,14 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'SkySync API',
+    'DESCRIPTION': 'This is a test of the API schema',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    # OTHER SETTINGS
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/

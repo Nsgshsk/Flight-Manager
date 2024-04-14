@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from users.permissions import UsersPermissions
+from users.permissions import UsersPermissions, UserDetailsPermissions
 
 from rest_framework_simplejwt.views import TokenObtainPairView
 
@@ -23,6 +23,7 @@ class Users(APIView):
     It only accepts users with UsersPermissions.
     """
     permission_classes = [IsAuthenticated, UsersPermissions]
+    serializer_class = UserSerializer
     
     # Retrieve all users without admin
     def get(self, request):
@@ -48,20 +49,25 @@ class Users(APIView):
             return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UserDetails(APIView):
-    permission_classes = [IsAuthenticated, UsersPermissions]
+    permission_classes = [IsAuthenticated, UserDetailsPermissions]
+    serializer_class = UserSerializer
     
     def get(self, request, id):
-        user = User.objects.get(pk=id)
+        try:
+            user = User.objects.get(pk=id)
+        except:
+            return Response(data={'message': 'Invalid request!'}, status=status.HTTP_400_BAD_REQUEST)
         
-        if user is not None:
-            serializer = UserSerializer(user)
-            return Response(data=serializer.data, status=status.HTTP_202_ACCEPTED) 
-        else:
-            return Response({'message': 'Invalid request!'}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = UserSerializer(user)
+        return Response(data=serializer.data, status=status.HTTP_202_ACCEPTED) 
         
     # Edit user information (partial)
     def patch(self, request, id):
-        user = User.objects.get(pk=id)
+        try:
+            user = User.objects.get(pk=id)
+        except:
+            return Response(data={'message': 'Invalid request!'}, status=status.HTTP_400_BAD_REQUEST)
+        
         serializer = UserSerializer(user, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -71,8 +77,10 @@ class UserDetails(APIView):
     
     # Delete user
     def delete(self, request, id):
-        if User.objects.contains(pk=id):
-            User.objects.get(pk=id).delete()
-            return Response({'message': 'Account deleted!'}, status=status.HTTP_204_NO_CONTENT)
-        else:
-            return Response({'message': 'Invalid request!'}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            user = User.objects.get(pk=id)
+        except:
+            return Response(data={'message': 'Invalid request!'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        user.delete()
+        return Response({'message': 'Account deleted!'}, status=status.HTTP_204_NO_CONTENT)

@@ -6,6 +6,14 @@ class UsersPermissions(BasePermission):
     def has_permission(self, request, view):
         return request.user.role == 1
 
+class UserDetailsPermissions(BasePermission):
+    def has_permission(self, request, view):
+        if request.user.role == 1:
+            return True
+        else:
+            user_id = view.kwargs.get('id', None)
+            return user_id is not None and request.user.id == user_id
+
 class FlightsPermissions(BasePermission):
     def has_permission(self, request, view):
         if request.method in SAFE_METHODS:
