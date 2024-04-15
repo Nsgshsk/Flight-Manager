@@ -43,7 +43,7 @@
                     nzSize="large"
                     placeholder="Where from?"
                     nz-input
-                    formControlName="departureFrom"
+                    formControlName="departure_airport"
                     (ngModelChange)="onChangeDeparture($event)"
                     [nzAutocomplete]="autoDeparture"
                   />
@@ -59,7 +59,7 @@
                     nzSize="large"
                     placeholder="Where to?"
                     nz-input
-                    formControlName="arrivalAt"
+                    formControlName="arrival_airport"
                     (ngModelChange)="onChangeArrival($event)"
                     [nzAutocomplete]="autoArrival"
                   />
@@ -71,7 +71,7 @@
               </nz-form-item>
             </div>
             <div nz-col nz-flex id="flightDates">
-              <nz-form-item id="departureDate">
+              <nz-form-item id="departure_date">
                 <nz-form-control>
                   <nz-date-picker
                     nzSize="large"
@@ -95,7 +95,7 @@
                     nzSize="large"
                     [nzDisabledDate]="disabledEndDate"
                     nzFormat="MMM D, yyyy"
-                    formControlName="returnDate"
+                    formControlName="return_date"
                     nzPlaceHolder="Return"
                     (nzOnOpenChange)="handleEndOpenChange($event)"
                   ></nz-date-picker>

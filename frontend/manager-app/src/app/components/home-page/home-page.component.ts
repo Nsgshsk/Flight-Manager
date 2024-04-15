@@ -56,16 +56,16 @@ export class HomePageComponent {
           validators: [Validators.required],
         },
       ],
-      departureFrom: [
+      departure_airport: [
         'Sofia',
         {
           nonNullable: true,
           validators: [Validators.required],
         },
       ],
-      arrivalAt: [''],
-      departureDate: [null as Date | null],
-      returnDate: [null as Date | null],
+      arrival_airport: [''],
+      departure_date: [null as Date | null],
+      return_date: [null as Date | null],
     });
     this.filteredDepartureCities = this.cities;
     this.filteredArrivalCities = this.cities;
