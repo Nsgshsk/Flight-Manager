@@ -8,8 +8,9 @@
     </div>
   </nz-header>
   <nz-content>
+    <nz-space></nz-space>
     <main style="height: 100%">
-      <div nz-flex nzJustify="center" nzAlign="center" style="min-height: 100%">
+      <div nz-flex [nzVertical]="true" nzJustify="center" nzAlign="center" style="min-height: 100%">
         <form nz-form [formGroup]="flightSearchForm" class="flight-search">
           <div nz-row id="ticketInfo">
             <nz-form-item nz-col id="ticketType">
@@ -120,6 +121,11 @@
             </nz-form-item>
           </div>
         </form>
+        <div *ngIf="true">
+          <nz-space></nz-space>
+          <nz-divider nzText="Search Results" style="width: 90vw;"></nz-divider>
+          <app-flight-list></app-flight-list>
+        </div>
       </div>
     </main>
   </nz-content>

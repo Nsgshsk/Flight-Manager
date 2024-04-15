@@ -1,4 +1,4 @@
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage, InvalidPage, PageNotAnInteger
 
 from rest_framework import status
 from rest_framework.views import APIView
@@ -18,14 +18,29 @@ class CustomerRequests(APIView):
     permission_classes = [(IsAuthenticated & ReservationsPermissions) | (AllowAny & AnnoCusomerRequestPermissions)]
     
     def get(self, request):
+        params = self.request.query_params
+        
         customers = CustomerRequest.objects.all()
         
-        page_number = self.request.query_params.get('page_number ', 1)
-        page_size = self.request.query_params.get('page_size ', 10)
+        sort_field = params.get('sortField', None)
+        sort_order = params.get('sortOrder', 1)
+        
+        if sort_field is not None:
+            if sort_order == 1:
+                customers.order_by(sort_field)
+            elif sort_order == -1:
+                customers.order_by(f'-{sort_field}')
+        
+        page_number = params.get('page', 1)
+        page_size = params.get('results', 10)
 
         paginator = Paginator(customers , page_size)
+        try:
+            page = paginator.page(page_number)
+        except(EmptyPage, InvalidPage, PageNotAnInteger):
+            page = paginator.page(1)
         
-        serializer = CustomerRequestSerializer(paginator.page(page_number), many=True, context={'request': request})
+        serializer = CustomerRequestSerializer(page, many=True, context={'request': request})
         return Response(data=serializer.data, status=status.HTTP_200_OK)
     
     def post(self, request):

@@ -1,16 +1,18 @@
 from rest_framework import serializers
 from reservations.models import CustomerRequest, Nationality, Reservation
 
+from flights.models import Flight
 from users.validators import EgnValidator
 
 class CustomerRequestSerializer(serializers.ModelSerializer):
+    flight_id = serializers.PrimaryKeyRelatedField(queryset=Flight.objects.all())
     class Meta:
         model = CustomerRequest
         fields = [
             'id',
             'email',
             'created',
-            'flight',
+            'flight_id',
             'status'
         ]
 

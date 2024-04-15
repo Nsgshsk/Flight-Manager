@@ -10,11 +10,12 @@ import {
 
 import { NzDatePickerComponent } from 'ng-zorro-antd/date-picker';
 import { NgZorroModule } from '../shared/NgZorro.module';
+import { FlightListComponent } from './flight-list/flight-list.component';
 
 @Component({
   selector: 'app-home-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NgZorroModule],
+  imports: [CommonModule, ReactiveFormsModule, NgZorroModule, FlightListComponent],
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.css',
 })

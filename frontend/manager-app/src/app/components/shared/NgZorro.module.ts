@@ -15,6 +15,10 @@ import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { NzListModule } from 'ng-zorro-antd/list';
+import { NzMessageModule } from 'ng-zorro-antd/message';
+import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
 
 @NgModule({
   exports: [
@@ -33,6 +37,10 @@ import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
     NzBreadCrumbModule,
     NzMenuModule,
     NzCheckboxModule,
+    NzListModule,
+    NzMessageModule,
+    NzSkeletonModule,
+    NzDividerModule,
   ],
 })
 export class NgZorroModule {}
