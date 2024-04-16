@@ -63,10 +63,8 @@ class CustomerRequests(APIView):
             else:
                 CustomerRequest.objects.filter(pk=customer.validated_data['id']).delete()
                 return Response(data=reservation.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-        email_handle = CustomerRequests()
-        response = email_handle.post(request)
-        return response
+
+        return Response(data={'message': 'Request submitted!'}, status=status.HTTP_201_CREATED)
 
 class CustomerRequestDetails(APIView):
     permission_classes = [(IsAuthenticated & ReservationsPermissions) | (AllowAny & AnnoCusomerRequestPermissions)]

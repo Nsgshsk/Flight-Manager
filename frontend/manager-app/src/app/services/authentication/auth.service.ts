@@ -7,9 +7,9 @@ import { UserToken } from '../../models/user-token';
 import { LoginForm } from '../../models/login-form';
 
 const apiPaths = {
-  login: '/api/token/',
-  refresh: '/api/token/refresh/',
-  logout: '/api/token/blacklist/',
+  login: 'api/token/',
+  refresh: 'api/token/refresh/',
+  logout: 'api/token/blacklist/',
 };
 
 @Injectable({

@@ -16,8 +16,8 @@ import { JwtModule } from '@auth0/angular-jwt';
 import { TokenStorageService } from './services/authentication/token-storage.service';
 
 export function tokenGetter() {
-  let service = inject(TokenStorageService);
-  return service.getTokenAccess();
+  let tokenStorage = inject(TokenStorageService);
+  return tokenStorage.getTokenAccess();
 }
 
 registerLocaleData(bg);

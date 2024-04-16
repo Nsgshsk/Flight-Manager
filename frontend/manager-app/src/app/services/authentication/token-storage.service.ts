@@ -46,6 +46,6 @@ export class TokenStorageService {
       refresh: '',
       access: '',
     };
-    sessionStorage.clear()
+    sessionStorage.clear();
   }
 }
