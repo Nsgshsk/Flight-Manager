@@ -1,4 +1,4 @@
-import { ApplicationConfig, importProvidersFrom } from '@angular/core';
+import { ApplicationConfig, importProvidersFrom, inject } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
@@ -8,11 +8,16 @@ import { registerLocaleData } from '@angular/common';
 import bg from '@angular/common/locales/bg';
 import { FormsModule } from '@angular/forms';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import {
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from '@angular/common/http';
 import { JwtModule } from '@auth0/angular-jwt';
+import { TokenStorageService } from './services/authentication/token-storage.service';
 
 export function tokenGetter() {
-  return localStorage.getItem("access_token");
+  let service = inject(TokenStorageService);
+  return service.getTokenAccess();
 }
 
 registerLocaleData(bg);
@@ -29,14 +34,13 @@ export const appConfig: ApplicationConfig = {
         config: {
           tokenGetter: tokenGetter,
           allowedDomains: ['http://127.0.0.1:8000/'],
-          disallowedRoutes: ["http://127.0.0.1:8000/api/auth/token/",
-          "http://127.0.0.1:8000/api/auth/token/refresh/",
-          "http://127.0.0.1:8000/api/auth/register/"],
+          disallowedRoutes: [
+            'http://127.0.0.1:8000/api/auth/token/',
+            'http://127.0.0.1:8000/api/auth/token/refresh/',
+          ],
         },
       })
     ),
-    provideHttpClient(
-      withInterceptorsFromDi(),
-    ),
+    provideHttpClient(withInterceptorsFromDi()),
   ],
 };

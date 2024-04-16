@@ -2,7 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { TokenPair } from '../../models/token-pair';
-import { User } from '../../models/user';
 import { TokenStorageService } from './token-storage.service';
 import { UserToken } from '../../models/user-token';
 import { LoginForm } from '../../models/login-form';
@@ -17,7 +16,7 @@ const apiPaths = {
   providedIn: 'root',
 })
 export class AuthService {
-  userInfo: UserToken | null = null;
+  private userInfo: UserToken | null = null;
 
   constructor(
     private jwtHelper: JwtHelperService,
@@ -25,38 +24,72 @@ export class AuthService {
     private tokenStorage: TokenStorageService
   ) {}
 
-  login(login: LoginForm) {
+  private login(login: LoginForm) {
     return this.http.post<TokenPair>(apiPaths.login, login);
   }
 
-  refresh() {
-    let refresh: string = this.tokenStorage.getTokenRefresh()
-    return this.http.post<TokenPair>(apiPaths.refresh, refresh)
+  private refresh() {
+    let refresh: string = this.tokenStorage.getTokenRefresh();
+    return this.http.post<TokenPair>(apiPaths.refresh, refresh);
   }
 
-  logout() {
-    this.userInfo = null
-    this.tokenStorage.clearTokens()
+  private logout() {
+    let refresh: string = this.tokenStorage.getTokenRefresh();
+    return this.http.post(apiPaths.refresh, refresh);
   }
 
-  setToken(login: LoginForm) {
+  loginToken(login: LoginForm) {
     this.login(login).subscribe({
-      next: (token) => {
-        this.setUserInfo(token.access);
-        this.tokenStorage.setTokenPair(token);
-      },
+      next: (token) => this.setTokenAndUserInfo(token),
       error: (err) => {
         console.error(err);
       },
     });
   }
 
-  setUserInfo(token: string) {
-    this.userInfo = this.jwtHelper.decodeToken(token) as UserToken;
+  refreshToken() {
+    this.refresh().subscribe({
+      next: (token) => this.setTokenAndUserInfo(token),
+      error: (err) => {
+        console.error(err);
+      },
+    });
+  }
+
+  logoutToken() {
+    this.logout().subscribe({
+      next: () => this.clearTokenAndUserInfo(),
+      error: (err) => {
+        console.error(err);
+      },
+    });
   }
 
   getUserInfo() {
-    if (!this.userInfo) return null;
     return this.userInfo;
+  }
+
+  isTokenAccessExpired() {
+    let access = this.tokenStorage.getTokenAccess();
+    return this.jwtHelper.isTokenExpired(access);
+  }
+
+  isTokenRefreshExpired() {
+    let refresh = this.tokenStorage.getTokenRefresh();
+    return this.jwtHelper.isTokenExpired(refresh);
+  }
+
+  private setTokenAndUserInfo(token: TokenPair) {
+    this.setUserInfo(token.access);
+    this.tokenStorage.setTokenPair(token);
+  }
+
+  private setUserInfo(token: string) {
+    this.userInfo = this.jwtHelper.decodeToken(token) as UserToken;
+  }
+
+  private clearTokenAndUserInfo() {
+    this.userInfo = null;
+    this.tokenStorage.clearTokens();
   }
 }

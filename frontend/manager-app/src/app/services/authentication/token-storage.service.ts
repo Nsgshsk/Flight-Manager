@@ -32,11 +32,11 @@ export class TokenStorageService {
     return this.tokenPair.refresh;
   }
 
-  setTokenAccess(access: string) {
+  private setTokenAccess(access: string) {
     this.tokenPair.access = access;
   }
 
-  setTokenRefresh(refresh: string) {
+  private setTokenRefresh(refresh: string) {
     this.tokenPair.refresh = refresh;
     sessionStorage.setItem('refresh', refresh);
   }
