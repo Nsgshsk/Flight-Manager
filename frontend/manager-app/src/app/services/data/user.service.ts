@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthService } from '../authentication/auth.service';
 import { of } from 'rxjs';
@@ -13,8 +13,22 @@ const apiPath = 'api/auth/users/';
 export class UserService {
   constructor(private http: HttpClient, private auth: AuthService) {}
 
-  getUserList(pageUrl: string) {
-    return this.http.get<User[]>(pageUrl);
+  getUserList(
+    pageIndex: number,
+    pageSize: number,
+    sortField: string | null,
+    sortOrder: string | null
+  ) {
+    let params = new HttpParams()
+      .append('page', `${pageIndex}`)
+      .append('results', `${pageSize}`)
+      .append('sortField', `${sortField}`)
+      .append('sortOrder', `${sortOrder}`);
+    return this.http.get(apiPath, { params: params });
+  }
+
+  getUserListWithUrl(pageUrl: string) {
+    return this.http.get(pageUrl);
   }
 
   createUser(userForm: UserForm) {

@@ -19,6 +19,7 @@ import { NzListModule } from 'ng-zorro-antd/list';
 import { NzMessageModule } from 'ng-zorro-antd/message';
 import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzTableModule } from 'ng-zorro-antd/table';
 
 @NgModule({
   exports: [
@@ -41,6 +42,7 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
     NzMessageModule,
     NzSkeletonModule,
     NzDividerModule,
+    NzTableModule,
   ],
 })
 export class NgZorroModule {}
