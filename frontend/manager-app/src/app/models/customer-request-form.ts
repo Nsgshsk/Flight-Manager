@@ -1,6 +1,8 @@
+import { FormControl } from "@angular/forms";
+
 export interface CustomerRequestForm {
-  email: string;
-  created: Date;
-  flight: number;
-  status: number;
+  email: FormControl<string>;
+  created: FormControl<Date>;
+  flight: FormControl<number>;
+  status: FormControl<number>;
 }

@@ -10,7 +10,13 @@
   <nz-content>
     <nz-space></nz-space>
     <main style="height: 100%">
-      <div nz-flex [nzVertical]="true" nzJustify="center" nzAlign="center" style="min-height: 100%">
+      <div
+        nz-flex
+        [nzVertical]="true"
+        nzJustify="center"
+        nzAlign="center"
+        style="min-height: 100%"
+      >
         <form nz-form [formGroup]="flightSearchForm" class="flight-search">
           <div nz-row id="ticketInfo">
             <nz-form-item nz-col id="ticketType">
@@ -39,34 +45,44 @@
             <div nz-col nz-flex id="flightDestinations">
               <nz-form-item id="departureCity">
                 <nz-form-control>
-                  <input
+                  <nz-select
+                    nzShowSearch
+                    nzServerSearch
                     nzSize="large"
                     placeholder="Where from?"
-                    nz-input
                     formControlName="departure_airport"
-                    (ngModelChange)="onChangeDeparture($event)"
-                    [nzAutocomplete]="autoDeparture"
-                  />
-                  <nz-autocomplete
-                    [nzDataSource]="filteredDepartureCities"
-                    #autoDeparture
-                  ></nz-autocomplete>
+                    [nzShowArrow]="false"
+                    [nzFilterOption]="nzFilterOption"
+                    (nzOnSearch)="onChangeDeparture($event)"
+                  >
+                    <nz-option
+                      *ngFor="
+                        let cityCountry of filteredDepartureCityCountryList
+                      "
+                      [nzLabel]="cityCountry"
+                      [nzValue]="cityCountry"
+                    ></nz-option>
+                  </nz-select>
                 </nz-form-control>
               </nz-form-item>
               <nz-form-item id="arrivalCity">
                 <nz-form-control>
-                  <input
+                  <nz-select
+                    nzShowSearch
+                    nzServerSearch
                     nzSize="large"
                     placeholder="Where to?"
-                    nz-input
                     formControlName="arrival_airport"
-                    (ngModelChange)="onChangeArrival($event)"
-                    [nzAutocomplete]="autoArrival"
-                  />
-                  <nz-autocomplete
-                    [nzDataSource]="filteredArrivalCities"
-                    #autoArrival
-                  ></nz-autocomplete>
+                    [nzShowArrow]="false"
+                    [nzFilterOption]="nzFilterOption"
+                    (nzOnSearch)="onChangeArrival($event)"
+                  >
+                    <nz-option
+                      *ngFor="let cityCountry of filteredArrivalCityCountryList"
+                      [nzLabel]="cityCountry"
+                      [nzValue]="cityCountry"
+                    ></nz-option>
+                  </nz-select>
                 </nz-form-control>
               </nz-form-item>
             </div>
@@ -77,16 +93,14 @@
                     nzSize="large"
                     [nzDisabledDate]="disabledStartDate"
                     nzFormat="d MMM, yyyy"
-                    formControlName="departureDate"
+                    formControlName="departure_date"
                     nzPlaceHolder="Departure"
                     (nzOnOpenChange)="handleStartOpenChange($event)"
                   ></nz-date-picker>
                 </nz-form-control>
               </nz-form-item>
               <nz-form-item
-                *ngIf="
-                  this.flightSearchForm.controls['type'].value != 'one-way'
-                "
+                *ngIf="this.flightSearchForm.controls['type'].value != 1"
                 id="returnDate"
               >
                 <nz-form-control>
@@ -123,7 +137,7 @@
         </form>
         <div *ngIf="true">
           <nz-space></nz-space>
-          <nz-divider nzText="Search Results" style="width: 90vw;"></nz-divider>
+          <nz-divider nzText="Search Results" style="width: 90vw"></nz-divider>
           <app-flight-list></app-flight-list>
         </div>
       </div>

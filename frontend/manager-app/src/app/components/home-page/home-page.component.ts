@@ -11,11 +11,19 @@ import {
 import { NzDatePickerComponent } from 'ng-zorro-antd/date-picker';
 import { NgZorroModule } from '../shared/NgZorro.module';
 import { FlightListComponent } from './flight-list/flight-list.component';
+import { SearchForm } from '../../models/search-form';
+import { AirportService } from '../../services/data/airport.service';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-home-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NgZorroModule, FlightListComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    NgZorroModule,
+    FlightListComponent,
+  ],
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.css',
 })
@@ -31,16 +39,28 @@ export class HomePageComponent {
     { label: 'Business', value: 2 },
     { label: 'First', value: 3 },
   ];
-  cities = ['Sofia', 'Varna', 'Rome', 'London'];
+  cityCountryList: string[] = [];
   now = new Date();
 
-  flightSearchForm: FormGroup;
-  filteredDepartureCities: string[] = [];
-  filteredArrivalCities: string[] = [];
+  flightSearchForm: FormGroup<SearchForm>;
+  filteredDepartureCityCountryList: string[] = [];
+  filteredArrivalCityCountryList: string[] = [];
+  nzFilterOption = (): boolean => true
 
   @ViewChild('endDatePicker') endDatePicker!: NzDatePickerComponent;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private airportService: AirportService) {
+    airportService.getAirportList().subscribe({
+      next: data => {
+        this.cityCountryList = $.map(data, (value) => {
+          return value.city + ', ' + value.country
+        })
+      },
+      error: err => {
+        console.log(err)
+        of([])
+      }
+    })
     this.flightSearchForm = this.fb.group({
       type: [
         1 as 1 | 2 | 3,
@@ -57,58 +77,64 @@ export class HomePageComponent {
         },
       ],
       departure_airport: [
-        'Sofia',
+        'Sofia, Bulgaria',
         {
           nonNullable: true,
           validators: [Validators.required],
         },
       ],
-      arrival_airport: [''],
+      arrival_airport: [
+        '',
+        {
+          nonNullable: true,
+          validators: [],
+        },
+      ],
       departure_date: [null as Date | null],
       return_date: [null as Date | null],
     });
-    this.filteredDepartureCities = this.cities;
-    this.filteredArrivalCities = this.cities;
+    this.filteredDepartureCityCountryList = this.cityCountryList;
+    this.filteredArrivalCityCountryList = this.cityCountryList;
     this.now.setHours(0, 0, 0, 0);
   }
 
   onTypeChange(value: number) {
-    if (value == 1 && this.flightSearchForm.controls['returnDate'].value)
-      this.flightSearchForm.controls['returnDate'].setValue(null);
+    if (value == 1 && this.flightSearchForm.controls['return_date'].value)
+      this.flightSearchForm.controls['return_date'].setValue(null);
   }
 
   onChangeDeparture(value: string) {
-    this.filteredDepartureCities = this.cities.filter(
+    this.filteredDepartureCityCountryList = this.cityCountryList.filter(
       (option) => option.toLowerCase().indexOf(value.toLowerCase()) !== -1
     );
   }
 
   onChangeArrival(value: string) {
-    this.filteredArrivalCities = this.cities.filter(
+    this.filteredArrivalCityCountryList = this.cityCountryList.filter(
       (option) => option.toLowerCase().indexOf(value.toLowerCase()) !== -1
     );
   }
 
   disabledStartDate = (startValue: Date): boolean => {
     const isBeforeNow = startValue < this.now;
-    if (!startValue || !this.flightSearchForm.controls['returnDate'].value) {
+    if (!startValue || !this.flightSearchForm.controls['return_date'].value) {
       return isBeforeNow;
     }
     return (
       startValue.getTime() >
-        this.flightSearchForm.controls['returnDate'].value.getTime() ||
+        this.flightSearchForm.controls['return_date'].value.getTime() ||
       isBeforeNow
     );
   };
 
   disabledEndDate = (endValue: Date): boolean => {
     const isBeforeNow = endValue < this.now;
-    if (!endValue || !this.flightSearchForm.controls['departureDate'].value) {
+    if (!endValue || !this.flightSearchForm.controls['departure_date'].value) {
       return isBeforeNow;
     }
     return (
       endValue.getTime() <=
-        this.flightSearchForm.controls['departureDate'].value.getTime() ||
+        this.flightSearchForm.controls['departure_date'].value.getTime() ||
       isBeforeNow
     );
   };

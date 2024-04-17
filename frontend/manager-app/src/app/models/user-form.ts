@@ -1,10 +1,11 @@
+import { FormControl } from "@angular/forms";
+
 export interface UserForm {
-  username: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  egn: string;
-  address: string;
-  phone_number: string;
-  role: number;
+  username: FormControl<string>;
+  first_name: FormControl<string>;
+  last_name: FormControl<string>;
+  email: FormControl<string>;
+  egn: FormControl<string>;
+  address: FormControl<string>;
+  phone_number: FormControl<string>;
 }

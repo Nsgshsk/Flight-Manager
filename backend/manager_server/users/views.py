@@ -11,6 +11,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 
 from users.models import User
 from users.serializers import UserSerializer, UserTokenObtainPairSerializer
+from manager_server.paginators import ResultsSetPagination
 
 # Create your views here.
 class ObtainTokenPair(TokenObtainPairView):
@@ -24,6 +25,7 @@ class Users(APIView):
     """
     permission_classes = [IsAuthenticated, UsersPermissions]
     serializer_class = UserSerializer
+    pagination_class = ResultsSetPagination
     
     # Retrieve all users without admin
     def get(self, request):
@@ -32,24 +34,21 @@ class Users(APIView):
         users = User.objects.exclude(role=1)
         
         sort_field = params.get('sortField', None)
-        sort_order = params.get('sortOrder', 1)
+        sort_order = params.get('sortOrder', 'ascend')
         
         if sort_field is not None:
-            if sort_order == 1:
+            if sort_order == 'ascend':
                 users.order_by(sort_field)
-            elif sort_order == -1:
+            elif sort_order == 'descend':
                 users.order_by(f'-{sort_field}')
 
-        page_number = params.get('page', 1)
-        page_size = params.get('results', 10)
-
-        paginator = Paginator(users , page_size)
-        try:
-            page = paginator.page(page_number)
-        except(EmptyPage, InvalidPage, PageNotAnInteger):
-            page = paginator.page(1)
+        paginator = self.pagination_class()
+        page = paginator.paginate_queryset(users, request)
         
-        serializer = UserSerializer(page, many=True, context={'request':request})
+        if page is not None:
+            return paginator.get_paginated_response(page)
+        
+        serializer = UserSerializer(users, many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
     
     # Create new user

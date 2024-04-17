@@ -9,11 +9,13 @@ from users.permissions import FlightsPermissions, AnnoFlightsPermissions
 
 from flights.models import Flight, Plane, PlaneType, Airport
 from flights.serializers import FlightSerializer, PlaneSerializer, PlaneTypeSerializer, AirportSerializer
+from manager_server.paginators import ResultsSetPagination
 
 # Create your views here.
 class Flights(APIView):
     permission_classes = [(IsAuthenticated & FlightsPermissions) | (AllowAny & AnnoFlightsPermissions)]
     serializer_class = FlightSerializer
+    pagination_class = ResultsSetPagination
     
     def get(self, request):
         params = self.request.query_params
@@ -21,24 +23,21 @@ class Flights(APIView):
         flights = Flight.objects.all()
         
         sort_field = params.get('sortField', None)
-        sort_order = params.get('sortOrder', 1)
+        sort_order = params.get('sortOrder', 'ascend')
         
         if sort_field is not None:
-            if sort_order == 1:
+            if sort_order == 'ascend':
                 flights.order_by(sort_field)
-            elif sort_order == -1:
+            elif sort_order == 'descend':
                 flights.order_by(f'-{sort_field}')
         
-        page_number = params.get('page', 1)
-        page_size = params.get('results', 10)
-
-        paginator = Paginator(flights, page_size)
-        try:
-            page = paginator.page(page_number)
-        except(EmptyPage, InvalidPage, PageNotAnInteger):
-            page = paginator.page(1)
+        paginator = self.pagination_class()
+        page = paginator.paginate_queryset(flights, request)
         
-        serializer = FlightSerializer(page, many=True, context={'request': request})
+        if page is not None:
+            return paginator.get_paginated_response(page)
+        
+        serializer = FlightSerializer(flights, many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
     
     def post(self, request):
@@ -91,11 +90,13 @@ class AnnoFlights(APIView):
     def get(self, request):
         params = self.request.query_params
         
-        departure = params.get('depratureFrom', None)
+        departure = params.get('departure_airport', None)
         if departure is None:
             return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
         
-        flights = Flight.objects.filter(departure_airport__city=departure)
+        departure_city, departure_country = tuple(', '.split(departure))
+        
+        flights = Flight.objects.filter(departure_airport__country=departure_country).filter(departure_airport__city=departure_city)
         
         seat_class = params.get('class', None)
         arrivalAt = params.get('arrivalAt', None)
@@ -118,24 +119,21 @@ class AnnoFlights(APIView):
         flights = flights.order_by('departure_datetime')
         
         sort_field = params.get('sortField', None)
-        sort_order = params.get('sortOrder', 1)
+        sort_order = params.get('sortOrder', 'ascend')
         
         if sort_field is not None:
-            if sort_order == 1:
+            if sort_order == 'ascend':
                 flights.order_by(sort_field)
-            elif sort_order == -1:
+            elif sort_order == 'descend':
                 flights.order_by(f'-{sort_field}')
         
-        page_number = params.get('page', 1)
-        page_size = params.get('results', 10)
-
-        paginator = Paginator(flights, page_size)
-        try:
-            page = paginator.page(page_number)
-        except(EmptyPage, InvalidPage, PageNotAnInteger):
-            page = paginator.page(1)
+        paginator = self.pagination_class()
+        page = paginator.paginate_queryset(flights, request)
         
-        serializer = FlightSerializer(page, many=True, context={'request': request})
+        if page is not None:
+            return paginator.get_paginated_response(page)
+        
+        serializer = FlightSerializer(flights, many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK) 
 
 class AnnoFlightDetails(APIView):
@@ -161,24 +159,21 @@ class Planes(APIView):
         planes = Plane.objects.all()
         
         sort_field = params.get('sortField', None)
-        sort_order = params.get('sortOrder', 1)
+        sort_order = params.get('sortOrder', 'ascend')
         
         if sort_field is not None:
-            if sort_order == 1:
+            if sort_order == 'ascend':
                 planes.order_by(sort_field)
-            elif sort_order == -1:
+            elif sort_order == 'descend':
                 planes.order_by(f'-{sort_field}')
         
-        page_number = params.get('page', 1)
-        page_size = params.get('results', 10)
-
-        paginator = Paginator(planes, page_size)
-        try:
-            page = paginator.page(page_number)
-        except(EmptyPage, InvalidPage, PageNotAnInteger):
-            page = paginator.page(1)
+        paginator = self.pagination_class()
+        page = paginator.paginate_queryset(planes, request)
         
-        serializer = FlightSerializer(page, many=True, context={'request': request})
+        if page is not None:
+            return paginator.get_paginated_response(page)
+        
+        serializer = FlightSerializer(planes, many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
     
     def post(self, request):

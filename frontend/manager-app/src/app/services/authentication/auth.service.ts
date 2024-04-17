@@ -24,7 +24,7 @@ export class AuthService {
     private tokenStorage: TokenStorageService
   ) {}
 
-  private login(login: LoginForm) {
+  private login(login: Partial<{ username: string; password: string }>) {
     return this.http.post<TokenPair>(apiPaths.login, login);
   }
 
@@ -38,13 +38,18 @@ export class AuthService {
     return this.http.post(apiPaths.refresh, refresh);
   }
 
-  loginToken(login: LoginForm) {
+  loginToken(login: Partial<{ username: string; password: string }>) {
+    let result = false;
     this.login(login).subscribe({
-      next: (token) => this.setTokenAndUserInfo(token),
+      next: (token) => {
+        this.setTokenAndUserInfo(token);
+        result = true;
+      },
       error: (err) => {
         console.error(err);
       },
     });
+    return result;
   }
 
   refreshToken() {

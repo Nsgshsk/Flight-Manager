@@ -5,8 +5,8 @@ urlpatterns = [
     path("", AnnoFlights.as_view()),
     path("<int:id>/", FlightDetails.as_view()),
     
-    path("flights/", Flights.as_view()),
-    path("flights/<int:id>/", FlightDetails.as_view()),
+    path("list/", Flights.as_view()),
+    path("list/<int:id>/", FlightDetails.as_view()),
     
     path("planes/", Planes.as_view()),
     path("planes/<string:id>/", PlaneDetails.as_view()),

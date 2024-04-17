@@ -1,7 +1,7 @@
 import { CustomerRequest } from './customer-request';
 import { Reservation } from './reservation';
 
-export interface CustomerRequestDetailsResponse {
+export interface CustomerDetailsResponse {
   customer: CustomerRequest;
-  reservations: Reservation;
+  reservations: Reservation[];
 }

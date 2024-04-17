@@ -1,25 +1,31 @@
 <nz-table
-      nzShowSizeChanger
-      [nzData]="listOfRandomUser"
-      [nzFrontPagination]="false"
-      [nzLoading]="loading"
-      [nzTotal]="total"
-      [nzPageSize]="pageSize"
-      [nzPageIndex]="pageIndex"
-      (nzQueryParams)="onQueryParamsChange($event)"
-    >
-      <thead>
-        <tr>
-          <th nzColumnKey="name" [nzSortFn]="true">Name</th>
-          <th nzColumnKey="gender" [nzFilters]="filterGender" [nzFilterFn]="true">Gender</th>
-          <th nzColumnKey="email" [nzSortFn]="true">Email</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let data of listOfRandomUser">
-          <td>{{ data.name.first }} {{ data.name.last }}</td>
-          <td>{{ data.gender }}</td>
-          <td>{{ data.email }}</td>
-        </tr>
-      </tbody>
-    </nz-table>
+  nzShowSizeChanger
+  [nzData]="userList"
+  [nzFrontPagination]="false"
+  [nzLoading]="loading"
+  [nzTotal]="total"
+  [nzPageSize]="pageSize"
+  [nzPageIndex]="pageIndex"
+  (nzQueryParams)="onQueryParamsChange($event)"
+>
+  <thead>
+    <tr>
+      <th nzColumnKey="username" [nzSortFn]="true">Username</th>
+      <th nzColumnKey="first_name" [nzSortFn]="true">First name</th>
+      <th nzColumnKey="last_name" [nzSortFn]="true">Last name</th>
+      <th nzColumnKey="email" [nzSortFn]="true">Email</th>
+      <th nzColumnKey="egn" [nzSortFn]="true">EGN</th>
+      <th nzColumnKey="role" [nzSortFn]="false">Role</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let user of userList">
+      <td>{{ user.username }}</td>
+      <td>{{ user.first_name }}</td>
+      <td>{{ user.last_name }}</td>
+      <td>{{ user.email }}</td>
+      <td>{{ user.egn }}</td>
+      <td>{{ user.role == 1 ? "Admin" : "Employee" }}</td>
+    </tr>
+  </tbody>
+</nz-table>

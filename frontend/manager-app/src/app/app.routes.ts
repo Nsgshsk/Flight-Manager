@@ -11,12 +11,18 @@ import { ReservationsComponent } from './components/panel-page/pages/reservation
 
 export const routes: Routes = [
   { path: 'login', component: LoginPageComponent },
-  { path: 'admin', component: PanelPageComponent, children: [
-    { path: 'dashboard', component: DashboardComponent },
-    { path: 'users', component: UsersComponent, canActivate: [] },
-    { path: 'planes', component: PlanesComponent },
-    { path: 'flights', component: FlightsComponent },
-    { path: 'reservations', component: ReservationsComponent },
-  ], canActivate: [] },
+  { path: 'admin', redirectTo: 'admin/dashboard', pathMatch: 'full' },
+  {
+    path: 'admin',
+    component: PanelPageComponent,
+    children: [
+      { path: 'dashboard', component: DashboardComponent },
+      { path: 'users', component: UsersComponent, canActivate: [] },
+      { path: 'planes', component: PlanesComponent },
+      { path: 'flights', component: FlightsComponent },
+      { path: 'reservations', component: ReservationsComponent },
+    ],
+    canActivate: [],
+  },
   { path: '', component: HomePageComponent },
 ];

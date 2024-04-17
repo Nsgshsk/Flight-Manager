@@ -9,7 +9,6 @@ import { NzFlexModule } from 'ng-zorro-antd/flex';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzGridModule } from 'ng-zorro-antd/grid';
-import { NzAutocompleteModule } from 'ng-zorro-antd/auto-complete';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
@@ -20,6 +19,7 @@ import { NzMessageModule } from 'ng-zorro-antd/message';
 import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzAlertModule } from 'ng-zorro-antd/alert';
 
 @NgModule({
   exports: [
@@ -33,7 +33,6 @@ import { NzTableModule } from 'ng-zorro-antd/table';
     NzSelectModule,
     NzGridModule,
     NzInputModule,
-    NzAutocompleteModule,
     NzDatePickerModule,
     NzBreadCrumbModule,
     NzMenuModule,
@@ -43,6 +42,7 @@ import { NzTableModule } from 'ng-zorro-antd/table';
     NzSkeletonModule,
     NzDividerModule,
     NzTableModule,
+    NzAlertModule,
   ],
 })
 export class NgZorroModule {}

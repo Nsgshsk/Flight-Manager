@@ -1,10 +1,12 @@
+import { FormControl } from "@angular/forms";
+
 export interface ReservationForm {
-  customer_request: number;
-  first_name: string;
-  middle_name: string;
-  last_name: string;
-  egn: string;
-  phone_number: string;
-  nationality: string | number;
-  type: number;
+  customer_request: FormControl<number>;
+  first_name: FormControl<string>;
+  middle_name: FormControl<string>;
+  last_name: FormControl<string>;
+  egn: FormControl<string>;
+  phone_number: FormControl<string>;
+  nationality: FormControl<string | number>;
+  type: FormControl<number>;
 }

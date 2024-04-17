@@ -11,11 +11,13 @@ from reservations.models import CustomerRequest, Nationality, Reservation
 from reservations.serializers import CustomerRequestSerializer, NationalitySerializer, ReservationSerializer
 
 from django.core.mail import send_mail
+from manager_server.paginators import ResultsSetPagination
 
 TYPE_CHOICES = { 1: 'Economy', 2: 'Business', 3: 'First'}
 # Create your views here.
 class CustomerRequests(APIView):
     permission_classes = [(IsAuthenticated & ReservationsPermissions) | (AllowAny & AnnoCusomerRequestPermissions)]
+    pagination_class = ResultsSetPagination
     
     def get(self, request):
         params = self.request.query_params
@@ -23,24 +25,21 @@ class CustomerRequests(APIView):
         customers = CustomerRequest.objects.all()
         
         sort_field = params.get('sortField', None)
-        sort_order = params.get('sortOrder', 1)
+        sort_order = params.get('sortOrder', 'ascend')
         
         if sort_field is not None:
-            if sort_order == 1:
+            if sort_order == 'ascend':
                 customers.order_by(sort_field)
-            elif sort_order == -1:
+            elif sort_order == 'descend':
                 customers.order_by(f'-{sort_field}')
         
-        page_number = params.get('page', 1)
-        page_size = params.get('results', 10)
-
-        paginator = Paginator(customers , page_size)
-        try:
-            page = paginator.page(page_number)
-        except(EmptyPage, InvalidPage, PageNotAnInteger):
-            page = paginator.page(1)
+        paginator = self.pagination_class()
+        page = paginator.paginate_queryset(customers, request)
         
-        serializer = CustomerRequestSerializer(page, many=True, context={'request': request})
+        if page is not None:
+            return paginator.get_paginated_response(page)
+        
+        serializer = CustomerRequestSerializer(customers, many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
     
     def post(self, request):
