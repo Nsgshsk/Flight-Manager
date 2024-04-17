@@ -115,6 +115,8 @@ class AnnoFlights(APIView):
         if departureDate is not None:
             flights = flights.filter(departure_datetime__gte=departureDate)
         
+        flights = flights.order_by('departure_datetime')
+        
         sort_field = params.get('sortField', None)
         sort_order = params.get('sortOrder', 1)
         

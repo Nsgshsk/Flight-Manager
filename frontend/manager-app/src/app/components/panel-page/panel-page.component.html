@@ -9,28 +9,23 @@
     <ul nz-menu nzTheme="dark" nzMode="inline">
       <li nz-menu-item>
         <span nz-icon nzType="pie-chart"></span>
-        <span>Option 1</span>
+        <span>Dashboard</span>
+      </li>
+      <li *ngIf="!!is_admin" nz-menu-item>
+        <span nz-icon nzType="user"></span>
+        <span>Users</span>
       </li>
       <li nz-menu-item>
-        <span nz-icon nzType="desktop"></span>
-        <span>Option 2</span>
-      </li>
-      <li nz-submenu nzTitle="User" nzIcon="user">
-        <ul>
-          <li nz-menu-item>Tom</li>
-          <li nz-menu-item>Bill</li>
-          <li nz-menu-item>Alex</li>
-        </ul>
-      </li>
-      <li nz-submenu nzTitle="Team" nzIcon="team">
-        <ul>
-          <li nz-menu-item>Team 1</li>
-          <li nz-menu-item>Team 2</li>
-        </ul>
+        <span nz-icon nzType="rocket"></span>
+        <span>Planes</span>
       </li>
       <li nz-menu-item>
-        <span nz-icon nzType="file"></span>
-        <span>File</span>
+        <span nz-icon nzType="profile"></span>
+        <span>Flights</span>
+      </li>
+      <li nz-menu-item>
+        <span nz-icon nzType="read"></span>
+        <span>Reservations</span>
       </li>
     </ul>
   </nz-sider>
