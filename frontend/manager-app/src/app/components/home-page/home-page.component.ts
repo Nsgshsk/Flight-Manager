@@ -14,6 +14,8 @@ import { FlightListComponent } from './flight-list/flight-list.component';
 import { SearchForm } from '../../models/search-form';
 import { AirportService } from '../../services/data/airport.service';
 import { of } from 'rxjs';
+import { Airport } from '../../models/airport';
+import * as $ from 'jquery';
 
 @Component({
   selector: 'app-home-page',
@@ -45,22 +47,23 @@ export class HomePageComponent {
   flightSearchForm: FormGroup<SearchForm>;
   filteredDepartureCityCountryList: string[] = [];
   filteredArrivalCityCountryList: string[] = [];
-  nzFilterOption = (): boolean => true
+  nzFilterOption = (): boolean => true;
 
   @ViewChild('endDatePicker') endDatePicker!: NzDatePickerComponent;
 
   constructor(private fb: FormBuilder, private airportService: AirportService) {
-    airportService.getAirportList().subscribe({
-      next: data => {
-        this.cityCountryList = $.map(data, (value) => {
-          return value.city + ', ' + value.country
-        })
-      },
-      error: err => {
-        console.log(err)
-        of([])
-      }
-    })
+    // airportService.getAirportList().subscribe({
+    //   next: (data) => {
+    //     this.cityCountryList = $.map(data, (value: Airport) => {
+    //       return value.city + ', ' + value.country;
+    //     });
+    //   },
+    //   error: (err) => {
+    //     console.log(err);
+    //     of([]);
+    //   },
+    // });
+    this.cityCountryList = ['Sofia', 'Varna', 'Rome'];
     this.flightSearchForm = this.fb.group({
       type: [
         1 as 1 | 2 | 3,
@@ -77,14 +80,14 @@ export class HomePageComponent {
         },
       ],
       departure_airport: [
-        'Sofia, Bulgaria',
+        null as string | null,
         {
           nonNullable: true,
           validators: [Validators.required],
         },
       ],
       arrival_airport: [
-        '',
+        null as string | null,
         {
           nonNullable: true,
           validators: [],

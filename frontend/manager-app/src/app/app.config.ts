@@ -3,13 +3,14 @@ import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
 import { provideClientHydration } from '@angular/platform-browser';
-import { bg_BG, provideNzI18n } from 'ng-zorro-antd/i18n';
+import { en_GB, provideNzI18n } from 'ng-zorro-antd/i18n';
 import { registerLocaleData } from '@angular/common';
-import bg from '@angular/common/locales/bg';
+import enGB from '@angular/common/locales/en-GB'
 import { FormsModule } from '@angular/forms';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import {
   provideHttpClient,
+  withFetch,
   withInterceptorsFromDi,
 } from '@angular/common/http';
 import { JwtModule } from '@auth0/angular-jwt';
@@ -20,13 +21,13 @@ export function tokenGetter() {
   return tokenStorage.getTokenAccess();
 }
 
-registerLocaleData(bg);
+registerLocaleData(enGB);
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideClientHydration(),
-    provideNzI18n(bg_BG),
+    provideNzI18n(en_GB),
     importProvidersFrom(FormsModule),
     provideAnimationsAsync(),
     importProvidersFrom(
@@ -41,6 +42,6 @@ export const appConfig: ApplicationConfig = {
         },
       })
     ),
-    provideHttpClient(withInterceptorsFromDi()),
+    provideHttpClient(withInterceptorsFromDi(), withFetch()),
   ],
 };

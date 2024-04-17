@@ -1,8 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Nationality } from '../../models/nationality';
+import { environment } from '../../../environments/environment';
 
-const apiPath = 'api/reservations/nationalities/';
+const apiUrl = environment.apiUrl;
+const apiPath = apiUrl + 'api/reservations/nationalities/';
 
 @Injectable({
   providedIn: 'root',

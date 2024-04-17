@@ -2,15 +2,17 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Plane } from '../../models/plane';
 import { PaginatedResponse } from '../../models/paginated-response';
+import { environment } from '../../../environments/environment';
 
-const apiPath = 'api/flights/planes';
+const apiUrl = environment.apiUrl;
+const apiPath = apiUrl + 'api/flights/planes';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PlaneService {
   constructor(private http: HttpClient) {}
-  
+
   getPlaneList(
     pageIndex: number,
     pageSize: number,

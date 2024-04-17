@@ -22,8 +22,8 @@ export class TokenStorageService {
   }
 
   getTokenAccess() {
-    if (!this.tokenPair.access) throw new Error();
-    return this.tokenPair.access;
+    if (!!this.tokenPair.access) return this.tokenPair.access;
+    return '';
   }
 
   getTokenRefresh() {

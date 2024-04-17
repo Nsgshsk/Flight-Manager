@@ -2,8 +2,10 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Flight } from '../../models/flight';
 import { PaginatedResponse } from '../../models/paginated-response';
+import { environment } from '../../../environments/environment';
 
-const apiPath = 'api/flights/';
+const apiUrl = environment.apiUrl;
+const apiPath = apiUrl + 'api/flights/';
 
 @Injectable({
   providedIn: 'root',

@@ -46,10 +46,11 @@
               <nz-form-item id="departureCity">
                 <nz-form-control>
                   <nz-select
+                    style="min-width: 150px"
                     nzShowSearch
                     nzServerSearch
                     nzSize="large"
-                    placeholder="Where from?"
+                    nzPlaceHolder="Where from?"
                     formControlName="departure_airport"
                     [nzShowArrow]="false"
                     [nzFilterOption]="nzFilterOption"
@@ -68,10 +69,12 @@
               <nz-form-item id="arrivalCity">
                 <nz-form-control>
                   <nz-select
+                    style="min-width: 150px"
+                    nzAllowClear
                     nzShowSearch
                     nzServerSearch
                     nzSize="large"
-                    placeholder="Where to?"
+                    nzPlaceHolder="Where to?"
                     formControlName="arrival_airport"
                     [nzShowArrow]="false"
                     [nzFilterOption]="nzFilterOption"

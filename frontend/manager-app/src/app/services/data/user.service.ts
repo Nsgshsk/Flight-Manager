@@ -1,12 +1,12 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthService } from '../authentication/auth.service';
-import { of } from 'rxjs';
 import { User } from '../../models/user';
-import { UserForm } from '../../models/user-form';
 import { PaginatedResponse } from '../../models/paginated-response';
+import { environment } from '../../../environments/environment';
 
-const apiPath = 'api/auth/users/';
+const apiUrl = environment.apiUrl;
+const apiPath = apiUrl + 'api/auth/users/';
 
 @Injectable({
   providedIn: 'root',

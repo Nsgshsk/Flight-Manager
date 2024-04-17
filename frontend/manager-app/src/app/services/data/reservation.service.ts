@@ -4,8 +4,10 @@ import { CustomerRequest } from '../../models/customer-request';
 import { CustomerDetailsResponse } from '../../models/customer-details-response';
 import { PaginatedResponse } from '../../models/paginated-response';
 import { Reservation } from '../../models/reservation';
+import { environment } from '../../../environments/environment';
 
-const apiPath = 'api/reservations/';
+const apiUrl = environment.apiUrl;
+const apiPath = apiUrl + 'api/reservations/';
 
 @Injectable({
   providedIn: 'root',

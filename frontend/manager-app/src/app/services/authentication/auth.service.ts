@@ -4,12 +4,13 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 import { TokenPair } from '../../models/token-pair';
 import { TokenStorageService } from './token-storage.service';
 import { UserToken } from '../../models/user-token';
-import { LoginForm } from '../../models/login-form';
+import { environment } from '../../../environments/environment';
 
+const apiUrl = environment.apiUrl;
 const apiPaths = {
-  login: 'api/token/',
-  refresh: 'api/token/refresh/',
-  logout: 'api/token/blacklist/',
+  login: apiUrl + 'api/token/',
+  refresh: apiUrl + 'api/token/refresh/',
+  logout: apiUrl + 'api/token/blacklist/',
 };
 
 @Injectable({
