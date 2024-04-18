@@ -9,7 +9,7 @@ urlpatterns = [
     path("list/<int:id>/", FlightDetails.as_view()),
     
     path("planes/", Planes.as_view()),
-    path("planes/<string:id>/", PlaneDetails.as_view()),
+    path("planes/<str:id>/", PlaneDetails.as_view()),
     
     path("airports/", Airports.as_view()),
     path("planetypes/", PlaneTypes.as_view()),

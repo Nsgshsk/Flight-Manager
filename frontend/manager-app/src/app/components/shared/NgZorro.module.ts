@@ -21,6 +21,7 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzAlertModule } from 'ng-zorro-antd/alert';
 import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzAffixModule } from 'ng-zorro-antd/affix';
 
 @NgModule({
   exports: [
@@ -45,6 +46,7 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
     NzTableModule,
     NzAlertModule,
     NzModalModule,
+    NzAffixModule,
   ],
 })
 export class NgZorroModule {}

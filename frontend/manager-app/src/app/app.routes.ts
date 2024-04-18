@@ -22,7 +22,7 @@ export const routes: Routes = [
       { path: 'flights', component: FlightsComponent },
       { path: 'reservations', component: ReservationsComponent },
     ],
-    canActivate: [],
+    canActivate: [authGuard],
   },
   { path: '', component: HomePageComponent },
 ];

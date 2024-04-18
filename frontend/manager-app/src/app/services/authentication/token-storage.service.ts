@@ -22,13 +22,17 @@ export class TokenStorageService {
   }
 
   getTokenAccess() {
+    console.log(this.tokenPair.access);
     if (!!this.tokenPair.access) return this.tokenPair.access;
     return '';
   }
 
   getTokenRefresh() {
-    if (!this.tokenPair.refresh)
-      this.tokenPair.refresh = sessionStorage.getItem('refresh') || '';
+    console.log(this.tokenPair.refresh);
+    if (!!!this.tokenPair.refresh)
+      this.tokenPair.refresh = !!sessionStorage.getItem('refresh')
+        ? sessionStorage.getItem('refresh')!
+        : '';
     return this.tokenPair.refresh;
   }
 

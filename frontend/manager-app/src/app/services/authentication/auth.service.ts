@@ -8,9 +8,9 @@ import { environment } from '../../../environments/environment';
 
 const apiUrl = environment.apiUrl;
 const apiPaths = {
-  login: apiUrl + 'api/token/',
-  refresh: apiUrl + 'api/token/refresh/',
-  logout: apiUrl + 'api/token/blacklist/',
+  login: apiUrl + 'api/auth/token/',
+  refresh: apiUrl + 'api/auth/token/refresh/',
+  logout: apiUrl + 'api/auth/token/blacklist/',
 };
 
 @Injectable({
@@ -31,12 +31,12 @@ export class AuthService {
 
   private refresh() {
     let refresh: string = this.tokenStorage.getTokenRefresh();
-    return this.http.post<TokenPair>(apiPaths.refresh, refresh);
+    return this.http.post<TokenPair>(apiPaths.refresh, { refresh });
   }
 
   private logout() {
     let refresh: string = this.tokenStorage.getTokenRefresh();
-    return this.http.post(apiPaths.refresh, refresh);
+    return this.http.post(apiPaths.refresh, { refresh });
   }
 
   loginToken(login: Partial<{ username: string; password: string }>) {

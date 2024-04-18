@@ -15,7 +15,7 @@ from manager_server.paginators import ResultsSetPagination
 
 # Create your views here.
 class ObtainTokenPair(TokenObtainPairView):
-    permission_classes = [AllowAny,]
+    permission_classes = [AllowAny]
     serializer_class = UserTokenObtainPairSerializer
     
 class Users(APIView):
