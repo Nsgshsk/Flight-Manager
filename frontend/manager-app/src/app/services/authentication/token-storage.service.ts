@@ -1,20 +1,16 @@
+import { isPlatformBrowser } from '@angular/common';
+import { environment } from '../../../environments/environment';
 import { TokenPair } from './../../models/token-pair';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { BrowserStorageService } from './browser-storage.service';
+
+const secretKey = environment.secretKey;
 
 @Injectable({
   providedIn: 'root',
 })
 export class TokenStorageService {
-  private tokenPair: TokenPair = {
-    refresh: '',
-    access: '',
-  };
-
-  constructor() {}
-
-  getTokenPair() {
-    return this.tokenPair;
-  }
+  constructor(private storage: BrowserStorageService) {}
 
   setTokenPair(token: TokenPair) {
     this.setTokenAccess(token.access);
@@ -22,34 +18,26 @@ export class TokenStorageService {
   }
 
   getTokenAccess() {
-    console.log(this.tokenPair.access);
-    if (!!this.tokenPair.access) return this.tokenPair.access;
-    return '';
+    return this.storage.getItem('access');
+  }
+
+  async getAsyncTokenAccess() {
+    return this.storage.getItem('access');
   }
 
   getTokenRefresh() {
-    console.log(this.tokenPair.refresh);
-    if (!!!this.tokenPair.refresh)
-      this.tokenPair.refresh = !!sessionStorage.getItem('refresh')
-        ? sessionStorage.getItem('refresh')!
-        : '';
-    return this.tokenPair.refresh;
+    return this.storage.getItem('refresh');
   }
 
   private setTokenAccess(access: string) {
-    this.tokenPair.access = access;
+    this.storage.setItem('access', access);
   }
 
   private setTokenRefresh(refresh: string) {
-    this.tokenPair.refresh = refresh;
-    sessionStorage.setItem('refresh', refresh);
+    this.storage.setItem('refresh', refresh);
   }
 
   clearTokens() {
-    this.tokenPair = {
-      refresh: '',
-      access: '',
-    };
-    sessionStorage.clear();
+    this.storage.clear();
   }
 }

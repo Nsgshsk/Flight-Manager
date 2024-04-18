@@ -26,9 +26,9 @@ export class LoginPageComponent {
   loggedIn = false;
   error = false;
 
-  submitForm(): void {
+  async submitForm() {
     if (this.validateForm.valid) {
-      this.loggedIn = this.auth.loginToken(this.validateForm.value);
+      this.loggedIn = await this.auth.loginToken(this.validateForm.value);
       if (this.loggedIn)
         setTimeout(() => {
           this.router.navigate(['/admin']);

@@ -30,27 +30,28 @@ export class AuthService {
   }
 
   private refresh() {
-    let refresh: string = this.tokenStorage.getTokenRefresh();
+    let refresh = this.tokenStorage.getTokenRefresh();
     return this.http.post<TokenPair>(apiPaths.refresh, { refresh });
   }
 
   private logout() {
-    let refresh: string = this.tokenStorage.getTokenRefresh();
+    let refresh = this.tokenStorage.getTokenRefresh();
     return this.http.post(apiPaths.refresh, { refresh });
   }
 
   loginToken(login: Partial<{ username: string; password: string }>) {
-    let result = false;
-    this.login(login).subscribe({
-      next: (token) => {
-        this.setTokenAndUserInfo(token);
-        result = true;
-      },
-      error: (err) => {
-        console.error(err);
-      },
+    return new Promise<boolean>((resolve) => {
+      this.login(login).subscribe({
+        next: (token) => {
+          this.setTokenAndUserInfo(token);
+          resolve(true);
+        },
+        error: (err) => {
+          console.error(err);
+          resolve(false);
+        },
+      });
     });
-    return result;
   }
 
   refreshToken() {
