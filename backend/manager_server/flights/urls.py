@@ -1,9 +1,9 @@
 from django.urls import path
-from flights.views import PlaneTypes, Airports, Planes, Flights, FlightDetails, AnnoFlights, PlaneDetails
+from flights.views import PlaneTypes, Airports, Planes, Flights, FlightDetails, AnnoFlights, PlaneDetails, AnnoFlightDetails
 
 urlpatterns = [
     path("", AnnoFlights.as_view()),
-    path("<int:id>/", FlightDetails.as_view()),
+    path("<int:id>/", AnnoFlightDetails.as_view()),
     
     path("list/", Flights.as_view()),
     path("list/<int:id>/", FlightDetails.as_view()),

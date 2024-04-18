@@ -20,6 +20,7 @@ import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzAlertModule } from 'ng-zorro-antd/alert';
+import { NzModalModule } from 'ng-zorro-antd/modal';
 
 @NgModule({
   exports: [
@@ -43,6 +44,7 @@ import { NzAlertModule } from 'ng-zorro-antd/alert';
     NzDividerModule,
     NzTableModule,
     NzAlertModule,
+    NzModalModule,
   ],
 })
 export class NgZorroModule {}

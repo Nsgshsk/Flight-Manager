@@ -15,6 +15,9 @@ import {
 } from '@angular/common/http';
 import { JwtModule } from '@auth0/angular-jwt';
 import { TokenStorageService } from './services/authentication/token-storage.service';
+import { environment } from '../environments/environment';
+
+const apiUrl = environment.apiUrl
 
 export function tokenGetter() {
   let tokenStorage = inject(TokenStorageService);
@@ -34,10 +37,15 @@ export const appConfig: ApplicationConfig = {
       JwtModule.forRoot({
         config: {
           tokenGetter: tokenGetter,
-          allowedDomains: ['http://127.0.0.1:8000/'],
+          allowedDomains: [apiUrl],
           disallowedRoutes: [
-            'http://127.0.0.1:8000/api/auth/token/',
-            'http://127.0.0.1:8000/api/auth/token/refresh/',
+            apiUrl + 'api/auth/token/',
+            apiUrl + 'api/auth/token/refresh/',
+            apiUrl + 'api/flights/',
+            apiUrl + 'api/flights/:id/',
+            apiUrl + 'api/flights/airports/',
+            apiUrl + 'api/flights/planetypes/',
+            apiUrl + 'api/reservations/nationalities/',
           ],
         },
       })

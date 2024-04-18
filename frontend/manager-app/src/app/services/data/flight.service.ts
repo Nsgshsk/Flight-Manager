@@ -5,7 +5,7 @@ import { PaginatedResponse } from '../../models/paginated-response';
 import { environment } from '../../../environments/environment';
 
 const apiUrl = environment.apiUrl;
-const apiPath = apiUrl + 'api/flights/';
+const apiPath = apiUrl + 'api/flights/list/';
 
 @Injectable({
   providedIn: 'root',

@@ -1,0 +1,127 @@
+<div>
+  <form
+    nz-form
+    [formGroup]="validateForm"
+    class="user-form"
+    (ngSubmit)="submitForm()"
+  >
+    <nz-form-item>
+      <nz-form-control nzErrorTip="Please input your username!">
+        <nz-input-group nzPrefixIcon="user">
+          <input
+            type="text"
+            nz-input
+            nzHasFeedback
+            formControlName="username"
+            placeholder="Username"
+          />
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control>
+        <nz-input-group>
+          <input
+            type="text"
+            nz-input
+            nzHasFeedback
+            formControlName="first_name"
+            placeholder="First name"
+          />
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control>
+        <nz-input-group>
+          <input
+            type="text"
+            nz-input
+            nzHasFeedback
+            formControlName="last_name"
+            placeholder="Last name"
+          />
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control [nzErrorTip]="passwordErrorMessage">
+        <nz-input-group nzPrefixIcon="lock">
+          <input
+            type="password"
+            nz-input
+            nzHasFeedback
+            formControlName="password"
+            placeholder="Password"
+          />
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control>
+        <nz-input-group>
+          <input
+            type="text"
+            nz-input
+            nzHasFeedback
+            formControlName="email"
+            placeholder="Email"
+          />
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control>
+        <nz-input-group>
+          <input
+            type="text"
+            nz-input
+            nzHasFeedback
+            formControlName="egn"
+            placeholder="EGN"
+          />
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control>
+        <nz-input-group>
+          <input
+            type="text"
+            nz-input
+            nzHasFeedback
+            formControlName="address"
+            placeholder="Address"
+          />
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control>
+        <nz-input-group>
+          <input
+            type="text"
+            nz-input
+            nzHasFeedback
+            formControlName="phone_number"
+            placeholder="Phone number"
+          />
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+  <nz-alert
+    *ngIf="success"
+    nzType="success"
+    nzMessage="User created!"
+    nzShowIcon
+  ></nz-alert>
+  <nz-alert
+    *ngIf="error"
+    nzType="error"
+    nzMessage="Wrong credentials!"
+    nzShowIcon
+    nzCloseable
+    (nzOnClose)="(onClose)"
+  ></nz-alert>
+</div>

@@ -11,18 +11,20 @@
           <input
             type="text"
             nz-input
-            formControlName="userName"
+            nzHasFeedback
+            formControlName="username"
             placeholder="Username"
           />
         </nz-input-group>
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
-      <nz-form-control [nzErrorTip]="passwordErrorMessage">
+      <nz-form-control nzErrorTip="Please input your password!">
         <nz-input-group nzPrefixIcon="lock">
           <input
             type="password"
             nz-input
+            nzHasFeedback
             formControlName="password"
             placeholder="Password"
           />
@@ -46,7 +48,7 @@
   <nz-alert
     *ngIf="error"
     nzType="error"
-    nzMessage="Error"
+    nzMessage="Wrong credentials!"
     nzShowIcon
     nzCloseable
     (nzOnClose)="(onClose)"
