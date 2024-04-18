@@ -2,7 +2,7 @@ from django.urls import path
 
 from rest_framework_simplejwt.views import TokenRefreshView, TokenBlacklistView
 
-from users.views import Users, ObtainTokenPair, UserDetails
+from users.views import Users, ObtainTokenPair
 
 urlpatterns = [
     # Auth views
@@ -11,6 +11,6 @@ urlpatterns = [
     path('token/blacklist/', TokenBlacklistView.as_view(), name='token_blacklist'),
     
     # Admins only
-    path('users/', Users.as_view()),
-    path('users/<int:id>/', UserDetails.as_view()),
+    path('users/', Users.as_view({'get': 'list', 'post': 'create'})),
+    path('users/<int:id>/', Users.as_view({'get': 'retrieve', 'patch': 'partial_update', 'delete': 'delete'})),
 ]

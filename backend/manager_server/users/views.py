@@ -1,7 +1,6 @@
-from django.core.paginator import Paginator, EmptyPage, InvalidPage, PageNotAnInteger
-
 from rest_framework import status
 from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -18,7 +17,7 @@ class ObtainTokenPair(TokenObtainPairView):
     permission_classes = [AllowAny]
     serializer_class = UserTokenObtainPairSerializer
     
-class Users(APIView):
+class UsersOld(APIView):
     """
     This view handles requests about users.
     It only accepts users with UsersPermissions.
@@ -45,8 +44,7 @@ class Users(APIView):
         paginator = self.pagination_class()
         page = paginator.paginate_queryset(users, request)
         
-        if page is not None:
-            return paginator.get_paginated_response(page)
+        return paginator.get_paginated_response(page)
         
         serializer = UserSerializer(users, many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
@@ -62,7 +60,7 @@ class Users(APIView):
         else:
             return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class UserDetails(APIView):
+class UserDetailsOld(APIView):
     permission_classes = [IsAuthenticated, UserDetailsPermissions]
     serializer_class = UserSerializer
     
@@ -98,3 +96,30 @@ class UserDetails(APIView):
         
         user.delete()
         return Response({'message': 'Account deleted!'}, status=status.HTTP_204_NO_CONTENT)
+ 
+class Users(ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated, UsersPermissions]
+    pagination_class = ResultsSetPagination
+    
+    def list(self, request):
+        params = request.query_params
+        users = self.queryset.exclude(pk=1)
+        
+        sort_field = params.get('sortField', None)
+        sort_order = params.get('sortOrder', 'ascend')
+        
+        if sort_field is not None:
+            if sort_order == 'ascend':
+                users.order_by(sort_field)
+            elif sort_order == 'descend':
+                users.order_by(f'-{sort_field}')
+        
+        self.queryset = users
+        
+        return super().list(request)
+    
+    def create(self, request):
+        request.data['role'] = 1 if User.objects.count() == 0 else 2
+        return super().create(request)
