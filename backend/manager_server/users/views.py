@@ -3,6 +3,8 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 
+from rest_framework.filters import SearchFilter, OrderingFilter
+
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from users.permissions import UsersPermissions, UserDetailsPermissions
 
@@ -102,21 +104,27 @@ class Users(ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated, UsersPermissions]
     pagination_class = ResultsSetPagination
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = [
+        'username',
+        'first_name',
+        'last_name',
+        'egn',
+        'address',
+        'phone_number',
+    ]
+    ordering_fields = [
+        'username',
+        'first_name',
+        'last_name',
+        'egn',
+        'address',
+        'phone_number',
+    ]
+    ordering = ['id']
     
     def list(self, request):
-        params = request.query_params
-        users = self.queryset.exclude(pk=1)
-        
-        sort_field = params.get('sortField', None)
-        sort_order = params.get('sortOrder', 'ascend')
-        
-        if sort_field is not None:
-            if sort_order == 'ascend':
-                users.order_by(sort_field)
-            elif sort_order == 'descend':
-                users.order_by(f'-{sort_field}')
-        
-        self.queryset = users
+        self.queryset = self.queryset.exclude(pk=1)
         
         return super().list(request)
     

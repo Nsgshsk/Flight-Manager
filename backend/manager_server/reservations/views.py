@@ -2,6 +2,9 @@ from django.core.paginator import Paginator, EmptyPage, InvalidPage, PageNotAnIn
 
 from rest_framework import status
 from rest_framework.views import APIView
+from rest_framework.generics import ListAPIView
+from rest_framework.viewsets import ReadOnlyModelViewSet, GenericViewSet
+from rest_framework.mixins import ListModelMixin
 from rest_framework.response import Response
 
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -176,10 +179,16 @@ class CustomerRequestDetails(APIView):
         customer.delete()
         return Response(data={'message': 'Request deleted!'}, status=status.HTTP_204_NO_CONTENT)
 
-class Nationalities(APIView):
+class NationalitiesOld(APIView):
     permission_classes = [AllowAny]
     serializer_class = NationalitySerializer
     
     def get(self, request):
         serializer = NationalitySerializer(Nationality.objects.all(), many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+class Nationalities(ListAPIView):
+    queryset = Nationality.objects.all()
+    serializer_class = NationalitySerializer
+    permission_classes = [AllowAny]
+    pagination_class = None

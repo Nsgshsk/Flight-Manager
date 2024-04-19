@@ -1,8 +1,10 @@
-from django.core.paginator import Paginator, EmptyPage, InvalidPage, PageNotAnInteger
-
 from rest_framework import status
 from rest_framework.views import APIView
+from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet
+from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
+
+from rest_framework.filters import SearchFilter, OrderingFilter
 
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from users.permissions import FlightsPermissions, AnnoFlightsPermissions
@@ -12,7 +14,7 @@ from flights.serializers import FlightSerializer, PlaneSerializer, PlaneTypeSeri
 from manager_server.paginators import ResultsSetPagination
 
 # Create your views here.
-class Flights(APIView):
+class FlightsOld(APIView):
     permission_classes = [(IsAuthenticated & FlightsPermissions) | (AllowAny & AnnoFlightsPermissions)]
     serializer_class = FlightSerializer
     pagination_class = ResultsSetPagination
@@ -48,7 +50,7 @@ class Flights(APIView):
         else:
             return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class FlightDetails(APIView):
+class FlightDetailsOld(APIView):
     permission_classes = [(IsAuthenticated & FlightsPermissions) | (AllowAny & AnnoFlightsPermissions)]
     serializer_class = FlightSerializer
     
@@ -83,7 +85,22 @@ class FlightDetails(APIView):
         flight.delete()
         return Response({'message': 'Flight deleted!'}, status=status.HTTP_204_NO_CONTENT)
 
-class AnnoFlights(APIView):
+class Flights(ModelViewSet):
+    queryset = Flight.objects.all()
+    serializer_class = FlightSerializer
+    permission_classes = [IsAuthenticated, FlightsPermissions]
+    pagination_class = ResultsSetPagination
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = [
+        'departure_airport',
+        'arrival_airport', 
+        'plane__tail_number',
+        'pilot_name',
+    ]
+    ordering_fields = '__all__'
+    ordering = ['departure_datetime']
+
+class AnnoFlightsOld(APIView):
     permission_classes = [AllowAny,]
     serializer_class = FlightSerializer
     
@@ -136,7 +153,7 @@ class AnnoFlights(APIView):
         serializer = FlightSerializer(flights, many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK) 
 
-class AnnoFlightDetails(APIView):
+class AnnoFlightDetailsOld(APIView):
     permission_classes = [AllowAny,]
     serializer_class = FlightSerializer
     
@@ -149,7 +166,55 @@ class AnnoFlightDetails(APIView):
         serializer = FlightSerializer(flight)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
-class Planes(APIView):
+class AnnoFlights(ReadOnlyModelViewSet):
+    queryset = Flight.objects.all()
+    serializer_class = FlightSerializer
+    permission_classes = [AllowAny]
+    pagination_class = ResultsSetPagination
+    
+    def list(self, request):
+        params = self.request.query_params
+        flights = self.queryset
+        
+        departure = params.get('departure_location', None)
+        if departure is not None:
+            departure_city, departure_country = tuple(', '.split(departure))
+            flights = flights.filter(departure_airport__country=departure_country).filter(departure_airport__city=departure_city)
+        
+        seat_class = params.get('class', None)
+        arrival_location = params.get('arrival_location', None)
+        departure_date = params.get('departure_date', None)
+        
+        if seat_class is not None:
+            if seat_class == 1:
+                flights = flights.filter(economy_seats__gt=0)
+            elif seat_class == 2:
+                flights = flights.filter(business_seats__gt=0)
+            elif seat_class == 3:
+                flights = flights.filter(first_seats__gt=0)
+        
+        if arrival_location is not None:
+            flights = flights.filter(arrival_airport__city=arrival_location)
+        
+        if departure_date is not None:
+            flights = flights.filter(departure_datetime__gte=departure_date)
+        
+        flights = flights.order_by('departure_datetime')
+        
+        sort_field = params.get('sortField', None)
+        sort_order = params.get('sortOrder', 'ascend')
+        
+        if sort_field is not None:
+            if sort_order == 'ascend':
+                flights.order_by(sort_field)
+            elif sort_order == 'descend':
+                flights.order_by(f'-{sort_field}')
+        
+        self.queryset = flights
+        
+        return super().list(request)
+
+class PlanesOld(APIView):
     permission_classes = [IsAuthenticated, FlightsPermissions]
     serializer_class = PlaneSerializer
     
@@ -184,7 +249,7 @@ class Planes(APIView):
         else:
             return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class PlaneDetails(APIView):
+class PlaneDetailsOld(APIView):
     permission_classes = [IsAuthenticated, FlightsPermissions]
     serializer_class = PlaneSerializer
     
@@ -219,7 +284,17 @@ class PlaneDetails(APIView):
         plane.delete()
         return Response({'message': 'Plane deleted!'}, status=status.HTTP_204_NO_CONTENT)
 
-class PlaneTypes(APIView):
+class Planes(ModelViewSet):
+    queryset = Plane.objects.all()
+    serializer_class = PlaneSerializer
+    permission_classes = [IsAuthenticated, FlightsPermissions]
+    pagination_class = ResultsSetPagination
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ['tail_number', 'type__name', 'type__iata_code']
+    ordering_fields = ['tail_number', 'data__type']
+    ordering = ['tail_number']
+
+class PlaneTypesOld(APIView):
     permission_classes = [IsAuthenticated, FlightsPermissions]
     serializer_class = PlaneTypeSerializer
     
@@ -227,10 +302,22 @@ class PlaneTypes(APIView):
         serializer = PlaneTypeSerializer(PlaneType.objects.all(), many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
-class Airports(APIView):
+class PlaneTypes(ListAPIView):
+    queryset = PlaneType.objects.all()
+    serializer_class = PlaneTypeSerializer
+    permission_classes = [IsAuthenticated, FlightsPermissions]
+    pagination_class = None
+
+class AirportsOld(APIView):
     permission_classes = [IsAuthenticated, FlightsPermissions]
     serializer_class = AirportSerializer
     
     def get(self, request):
         serializer = AirportSerializer(Airport.objects.all(), many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+class Airports(ListAPIView):
+    queryset = Airport.objects.all()
+    serializer_class = AirportSerializer
+    permission_classes = [AllowAny]
+    pagination_class = None
