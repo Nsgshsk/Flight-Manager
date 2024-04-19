@@ -22,6 +22,7 @@ import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzAlertModule } from 'ng-zorro-antd/alert';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzAffixModule } from 'ng-zorro-antd/affix';
+import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 
 @NgModule({
   exports: [
@@ -47,6 +48,7 @@ import { NzAffixModule } from 'ng-zorro-antd/affix';
     NzAlertModule,
     NzModalModule,
     NzAffixModule,
+    NzDescriptionsModule,
   ],
 })
 export class NgZorroModule {}

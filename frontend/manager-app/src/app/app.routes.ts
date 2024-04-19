@@ -8,6 +8,7 @@ import { UsersComponent } from './components/panel-page/pages/users/users.compon
 import { FlightsComponent } from './components/panel-page/pages/flights/flights.component';
 import { PlanesComponent } from './components/panel-page/pages/planes/planes.component';
 import { ReservationsComponent } from './components/panel-page/pages/reservations/reservations.component';
+import { UserDetailsComponent } from './components/panel-page/pages/user-details/user-details.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginPageComponent },
@@ -17,7 +18,8 @@ export const routes: Routes = [
     component: PanelPageComponent,
     children: [
       { path: 'dashboard', component: DashboardComponent },
-      { path: 'users', component: UsersComponent, canActivate: [] },
+      { path: 'users', component: UsersComponent },
+      { path: 'users/:id', component: UserDetailsComponent },
       { path: 'planes', component: PlanesComponent },
       { path: 'flights', component: FlightsComponent },
       { path: 'reservations', component: ReservationsComponent },

@@ -5,20 +5,12 @@ import {
   HttpEvent,
   HttpInterceptor,
   HttpErrorResponse,
-  HttpResponse,
 } from '@angular/common/http';
-import {
-  BehaviorSubject,
-  Observable,
-  catchError,
-  switchMap,
-  throwError,
-} from 'rxjs';
+import { Observable, catchError, switchMap, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { AuthService } from '../services/authentication/auth.service';
 import { TokenStorageService } from '../services/authentication/token-storage.service';
-
-const apiPaths = [];
+import { TokenPair } from '../models/token-pair';
 
 @Injectable()
 export class TokenAuthInterceptor implements HttpInterceptor {
@@ -37,9 +29,10 @@ export class TokenAuthInterceptor implements HttpInterceptor {
     const token = this.tokenStorage.getTokenAccess();
     const isLoggedIn = !!this.tokenStorage.getTokenRefresh();
     const isApiUrl = request.url.startsWith(environment.apiUrl);
+    const isMandatory = !request.url.includes('auth/token');
 
     // If the user is logged in and the request is to the API URL, add the Authorization header
-    if (isLoggedIn && isApiUrl) {
+    if (isLoggedIn && isApiUrl && isMandatory) {
       request = request.clone({
         setHeaders: { Authorization: `Bearer ${token}` },
       });
@@ -49,7 +42,7 @@ export class TokenAuthInterceptor implements HttpInterceptor {
       catchError((error) => {
         if (
           error instanceof HttpErrorResponse &&
-          !request.url.includes('auth/token/') &&
+          !request.url.includes('auth/token') &&
           error.status === 401
         ) {
           return this.handle401Error(request, next);
@@ -57,27 +50,35 @@ export class TokenAuthInterceptor implements HttpInterceptor {
 
         return throwError(() => error);
       })
-    ) as Observable<HttpEvent<any>>;
+    );
   }
 
-  private handle401Error(request: HttpRequest<any>, next: HttpHandler) {
+  private handle401Error(
+    request: HttpRequest<any>,
+    next: HttpHandler
+  ): Observable<HttpEvent<any>> {
     if (!this.isRefreshing) {
       this.isRefreshing = true;
 
-      if (!this.auth.isTokenRefreshExpired()) {
-        this.auth.refreshToken();
-        if (!this.auth.isTokenAccessExpired()) {
-          const token = this.tokenStorage.getTokenAccess();
-          request = request.clone({
-            setHeaders: { Authorization: `Bearer ${token}` },
-          });
+      return this.auth.refresh().pipe(
+        switchMap((token: TokenPair) => {
           this.isRefreshing = false;
+
+          this.tokenStorage.setTokenPair(token);
+
+          request = request.clone({
+            setHeaders: { Authorization: `Bearer ${token.access}` },
+          });
+
           return next.handle(request);
-        }
-      }
+        }),
+        catchError((error) => {
+          this.isRefreshing = false;
+          return throwError(() => error);
+        })
+      );
     }
-    this.isRefreshing = false;
-    this.auth.logoutToken();
-    return throwError(() => new Error());
+
+    return next.handle(request);
   }
 }

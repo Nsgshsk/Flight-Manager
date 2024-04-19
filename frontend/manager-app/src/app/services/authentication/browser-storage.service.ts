@@ -22,11 +22,4 @@ export class BrowserStorageService {
   clear() {
     if (!!this.storage) this.storage.clear();
   }
-
-  initialize() {
-    return new Promise<void>((resolve) => {
-      console.log(!!this.storage);
-      resolve();
-    });
-  }
 }

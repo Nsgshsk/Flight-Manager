@@ -21,10 +21,6 @@ export class TokenStorageService {
     return this.storage.getItem('access');
   }
 
-  async getAsyncTokenAccess() {
-    return this.storage.getItem('access');
-  }
-
   getTokenRefresh() {
     return this.storage.getItem('refresh');
   }

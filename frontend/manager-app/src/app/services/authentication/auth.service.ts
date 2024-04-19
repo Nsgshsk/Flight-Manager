@@ -5,6 +5,7 @@ import { TokenPair } from '../../models/token-pair';
 import { TokenStorageService } from './token-storage.service';
 import { UserToken } from '../../models/user-token';
 import { environment } from '../../../environments/environment';
+import { lastValueFrom } from 'rxjs';
 
 const apiUrl = environment.apiUrl;
 const apiPaths = {
@@ -29,7 +30,7 @@ export class AuthService {
     return this.http.post<TokenPair>(apiPaths.login, login);
   }
 
-  private refresh() {
+  refresh() {
     let refresh = this.tokenStorage.getTokenRefresh();
     return this.http.post<TokenPair>(apiPaths.refresh, { refresh });
   }
@@ -55,11 +56,18 @@ export class AuthService {
   }
 
   refreshToken() {
-    this.refresh().subscribe({
-      next: (token) => this.setTokenAndUserInfo(token),
-      error: (err) => {
-        console.error(err);
-      },
+    return new Promise<boolean>((resolve) => {
+      const token = lastValueFrom(this.refresh());
+      token.then(
+        (token) => {
+          this.setTokenAndUserInfo(token);
+          resolve(true);
+        },
+        (reason) => {
+          console.log(reason);
+          resolve(false);
+        }
+      );
     });
   }
 
@@ -73,8 +81,7 @@ export class AuthService {
   }
 
   getUserInfo() {
-    if (!this.userInfo)
-      this.setUserInfo(this.tokenStorage.getTokenAccess()!);
+    if (!this.userInfo) this.setUserInfo(this.tokenStorage.getTokenAccess()!);
     return this.userInfo;
   }
 

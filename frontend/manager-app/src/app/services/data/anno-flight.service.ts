@@ -16,14 +16,10 @@ export class AnnoFlightService {
   getFlightList(
     pageIndex: number,
     pageSize: number,
-    sortField: string | null,
-    sortOrder: string | null
   ) {
     let params = new HttpParams()
       .append('page', `${pageIndex}`)
       .append('results', `${pageSize}`)
-      .append('sortField', `${sortField}`)
-      .append('sortOrder', `${sortOrder}`);
     return this.http.get<PaginatedResponse>(apiPath, { params: params });
   }
 

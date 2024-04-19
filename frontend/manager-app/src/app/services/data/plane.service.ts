@@ -22,8 +22,7 @@ export class PlaneService {
     let params = new HttpParams()
       .append('page', `${pageIndex}`)
       .append('results', `${pageSize}`)
-      .append('sortField', `${sortField}`)
-      .append('sortOrder', `${sortOrder}`);
+      .append('ordering', `${sortOrder == 'descend' ? '-' : '' + sortField}`);
     return this.http.get<PaginatedResponse>(apiPath, { params: params });
   }
 

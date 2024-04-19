@@ -3,12 +3,12 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 
 import { NgZorroModule } from '../shared/NgZorro.module';
-import { RouterOutlet } from '@angular/router';
+import { RouterModule, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-panel-page',
   standalone: true,
-  imports: [CommonModule, NgZorroModule, RouterOutlet],
+  imports: [CommonModule, NgZorroModule, RouterOutlet, RouterModule],
   templateUrl: './panel-page.component.html',
   styleUrl: './panel-page.component.css',
 })

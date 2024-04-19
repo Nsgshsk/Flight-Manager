@@ -217,9 +217,9 @@ class CustomerRequests(ListModelMixin, RetrieveModelMixin, DestroyModelMixin, Ge
 
         return Response(data={'message': 'Request submitted!'}, status=status.HTTP_201_CREATED)
     
-    def confirm_request(self, request, id):
+    def confirm_request(self, request, pk):
         try:
-            customer = CustomerRequest.objects.get(pk=id)
+            customer = CustomerRequest.objects.get(pk=pk)
         except:
             return Response(data={'message': 'Invalid request!'}, status=status.HTTP_400_BAD_REQUEST)
 

@@ -45,19 +45,6 @@
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
-      <nz-form-control [nzErrorTip]="passwordErrorMessage">
-        <nz-input-group nzPrefixIcon="lock">
-          <input
-            type="password"
-            nz-input
-            nzHasFeedback
-            formControlName="password"
-            placeholder="Password"
-          />
-        </nz-input-group>
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item>
       <nz-form-control>
         <nz-input-group>
           <input
@@ -119,7 +106,7 @@
   <nz-alert
     *ngIf="error"
     nzType="error"
-    nzMessage="Error"
+    nzMessage="Wrong credentials!"
     nzShowIcon
     nzCloseable
     (nzOnClose)="(onClose)"

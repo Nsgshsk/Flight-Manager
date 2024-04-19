@@ -12,5 +12,5 @@ urlpatterns = [
     
     # Admins only
     path('users/', Users.as_view({'get': 'list', 'post': 'create'})),
-    path('users/<int:id>/', Users.as_view({'get': 'retrieve', 'patch': 'partial_update', 'delete': 'destroy'})),
+    path('users/<int:pk>/', Users.as_view({'get': 'retrieve', 'patch': 'partial_update', 'delete': 'destroy'})),
 ]

@@ -1,10 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, ViewContainerRef } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  ViewContainerRef,
+} from '@angular/core';
 import { NgZorroModule } from '../../../shared/NgZorro.module';
 import { User } from '../../../../models/user';
 import { UserService } from '../../../../services/data/user.service';
 import { NzTableQueryParams } from 'ng-zorro-antd/table';
-import { of } from 'rxjs';
+import { catchError, of, retry, throwError } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { CreateUserComponent } from './create-user/create-user.component';
 
@@ -43,6 +48,10 @@ export class UsersComponent implements OnInit {
     this.loading = true;
     this.userService
       .getUserList(pageIndex, pageSize, sortField, sortOrder)
+      .pipe(
+        retry(3),
+        catchError((error) => throwError(() => error))
+      )
       .subscribe({
         next: (data) => {
           this.loading = false;
@@ -50,8 +59,8 @@ export class UsersComponent implements OnInit {
           this.userList = data.results as User[];
         },
         error: (err) => {
+          this.loading = false;
           console.error(err);
-          of(this.userList);
         },
       });
   }
@@ -92,8 +101,9 @@ export class UsersComponent implements OnInit {
     const instance = modal.getContentComponent();
     modal.afterOpen.subscribe(() => console.log('[afterOpen] emitted!'));
     // Return a result when closed
-    modal.afterClose.subscribe((result) =>
-      console.log('[afterClose] The result is:', result)
-    );
+    modal.afterClose.subscribe((result) => {
+      console.log('[afterClose] The result is:', result);
+      this.loadDataFromServer(1, 10, null, null, []);
+    });
   }
 }
