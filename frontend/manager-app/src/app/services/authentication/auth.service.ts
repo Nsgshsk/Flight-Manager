@@ -73,6 +73,8 @@ export class AuthService {
   }
 
   getUserInfo() {
+    if (!this.userInfo)
+      this.setUserInfo(this.tokenStorage.getTokenAccess()!);
     return this.userInfo;
   }
 
