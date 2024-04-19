@@ -1,10 +1,8 @@
-<div nz-flex nzJustify="flex-end">
-  <nz-affix nzOffsetTop="20">
-    <button nz-button nzType="primary" (click)="createComponentModal()">
-      <span>Creat User</span>
-    </button>
-  </nz-affix>
-</div>
+<nz-affix nz-flex nzJustify="flex-end" nzOffsetTop="20">
+  <button nz-button nzType="primary" (click)="createComponentModal()">
+    <span>Creat User</span>
+  </button>
+</nz-affix>
 <nz-table
   nzShowSizeChanger
   [nzData]="userList"
@@ -27,7 +25,7 @@
   </thead>
   <tbody>
     <tr *ngFor="let user of userList">
-      <td>{{ user.username }}</td>
+      <td><a [routerLink]="['/', 'admin', 'users', user.id]">{{ user.username }}</a></td>
       <td>{{ user.first_name }}</td>
       <td>{{ user.last_name }}</td>
       <td>{{ user.email }}</td>

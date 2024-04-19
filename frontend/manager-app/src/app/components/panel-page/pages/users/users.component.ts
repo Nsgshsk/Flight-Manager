@@ -12,11 +12,12 @@ import { NzTableQueryParams } from 'ng-zorro-antd/table';
 import { catchError, of, retry, throwError } from 'rxjs';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { CreateUserComponent } from './create-user/create-user.component';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CommonModule, NgZorroModule, CreateUserComponent],
+  imports: [CommonModule, NgZorroModule, CreateUserComponent, RouterModule],
   templateUrl: './users.component.html',
   styleUrl: './users.component.css',
   changeDetection: ChangeDetectionStrategy.Default,
