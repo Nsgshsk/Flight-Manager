@@ -11,7 +11,7 @@ class CustomerRequest(models.Model):
     
     STATUS_CHOICES = (
         (PENDING, "Pending"),
-        (COMPLETE, "Colplete"),
+        (COMPLETE, "Complete"),
         (CANCELED, "Canceled"),
     )
     

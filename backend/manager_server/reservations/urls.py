@@ -1,8 +1,8 @@
 from django.urls import path
-from reservations.views import CustomerRequests, CustomerRequestDetails, Nationalities
+from reservations.views import CustomerRequests, Nationalities
 
 urlpatterns = [
-    path("", CustomerRequests.as_view()),
-    path("<int:id>/", CustomerRequestDetails.as_view()),
+    path("", CustomerRequests.as_view({'get': 'list', 'post': 'created'})),
+    path("<int:id>/", CustomerRequests.as_view({'get':'retrieve', 'post': 'confirm_request', 'delete': 'destroy'})),
     path("nationalities/", Nationalities.as_view()),
 ]
