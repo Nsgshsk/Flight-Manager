@@ -52,7 +52,7 @@ export class CreateUserComponent {
         ],
       ],
       email: ['', [Validators.required, Validators.email]],
-      egn: ['', [Validators.required]],
+      egn: ['', [Validators.required, Validators.minLength(10)]],
       address: ['', [Validators.required]],
       phone_number: [
         '',

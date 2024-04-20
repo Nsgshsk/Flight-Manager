@@ -1,1 +1,31 @@
-<p>reservations works!</p>
+<nz-table
+  nzShowSizeChanger
+  [nzData]="requestList"
+  [nzFrontPagination]="false"
+  [nzLoading]="loading"
+  [nzTotal]="total"
+  [nzPageSize]="pageSize"
+  [nzPageIndex]="pageIndex"
+  (nzQueryParams)="onQueryParamsChange($event)"
+>
+  <thead>
+    <tr>
+      <th nzColumnKey="email" [nzSortFn]="true">Email</th>
+      <th nzColumnKey="created" [nzSortFn]="true">Created</th>
+      <th nzColumnKey="flight" [nzSortFn]="true">Flight</th>
+      <th nzColumnKey="status" [nzSortFn]="false">Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let request of requestList">
+      <td>
+        <a [routerLink]="['/', 'admin', 'reservations', request.id]">{{
+          request.email
+        }}</a>
+      </td>
+      <td>{{ request.created }}</td>
+      <td>{{ request.flight }}</td>
+      <td>{{ request.status }}</td>
+    </tr>
+  </tbody>
+</nz-table>

@@ -1,0 +1,44 @@
+<nz-affix nz-flex nzJustify="flex-end" nzOffsetTop="20">
+    <button nz-button nzType="primary" (click)="createComponentModal()">
+      <span>Creat User</span>
+    </button>
+  </nz-affix>
+  <nz-table
+    nzShowSizeChanger
+    [nzData]="flightList"
+    [nzFrontPagination]="false"
+    [nzLoading]="loading"
+    [nzTotal]="total"
+    [nzPageSize]="pageSize"
+    [nzPageIndex]="pageIndex"
+    (nzQueryParams)="onQueryParamsChange($event)"
+  >
+    <thead>
+      <tr>
+        <th nzColumnKey="id" [nzSortFn]="false">Id</th>
+        <th nzColumnKey="departure_airport" [nzSortFn]="true">Departure airport</th>
+        <th nzColumnKey="departure_datetime" [nzSortFn]="true">Departure date</th>
+        <th nzColumnKey="arrival_airport" [nzSortFn]="true">Arrival airport</th>
+        <th nzColumnKey="arrival_datetime" [nzSortFn]="true">Arrival date</th>
+        <th nzColumnKey="plane" [nzSortFn]="true">Plane</th>
+        <th nzColumnKey="pilot_name" [nzSortFn]="true">Pilot</th>
+        <th nzColumnKey="economy_seats" [nzSortFn]="true">Economy seats</th>
+        <th nzColumnKey="business_seats" [nzSortFn]="true">Business seats</th>
+        <th nzColumnKey="first_seats" [nzSortFn]="true">First seats</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let flight of flightList">
+        <td><a [routerLink]="['/', 'admin', 'flights', flight.id]">{{ flight.id }}</a></td>
+        <td>{{ flight.departure_airport }}</td>
+        <td>{{ flight.departure_datetime }}</td>
+        <td>{{ flight.arrival_airport }}</td>
+        <td>{{ flight.arrival_datetime }}</td>
+        <td>{{ flight.plane }}</td>
+        <td>{{ flight.pilot_name }}</td>
+        <td>{{ flight.economy_seats }}</td>
+        <td>{{ flight.business_seats }}</td>
+        <td>{{ flight.first_seats }}</td>
+      </tr>
+    </tbody>
+  </nz-table>

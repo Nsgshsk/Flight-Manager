@@ -1,0 +1,152 @@
+<div>
+  <form
+    nz-form
+    [formGroup]="validateForm"
+    class="user-form"
+    (ngSubmit)="submitForm()"
+  >
+    <nz-form-item>
+      <nz-form-control nzErrorTip="Please input your username!">
+        <nz-select
+          nzShowSearch
+          nzServerSearch
+          nzPlaceHolder="Departure airport"
+          formControlName="departure_airport"
+          [nzShowArrow]="false"
+          [nzFilterOption]="nzFilterOption"
+          (nzOnSearch)="searchAirport($event)"
+        >
+          <nz-option
+            *ngFor="let o of airportOptions"
+            [nzLabel]="o.text"
+            [nzValue]="o.value"
+          ></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control>
+        <nz-date-picker
+          nzShowTime
+          nzFormat="yyyy-MM-dd HH:mm:ss"
+          formControlName="departure_datetime"
+          nzPlaceHolder="Departure time"
+        ></nz-date-picker>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control>
+        <nz-select
+          nzShowSearch
+          nzServerSearch
+          nzPlaceHolder="Arrival airport"
+          formControlName="arrival_airport"
+          [nzShowArrow]="false"
+          [nzFilterOption]="nzFilterOption"
+          (nzOnSearch)="searchAirport($event)"
+        >
+          <nz-option
+            *ngFor="let o of airportOptions"
+            [nzLabel]="o.text"
+            [nzValue]="o.value"
+          ></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control>
+        <nz-date-picker
+          nzShowTime
+          nzFormat="yyyy-MM-dd HH:mm:ss"
+          formControlName="arrival_datetime"
+          nzPlaceHolder="Arrival time"
+        ></nz-date-picker>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control>
+        <nz-select
+          nzShowSearch
+          nzServerSearch
+          nzPlaceHolder="Plane"
+          formControlName="plane"
+          [nzShowArrow]="false"
+          [nzFilterOption]="nzFilterOption"
+          (nzOnSearch)="searchPlane($event)"
+        >
+          <nz-option
+            *ngFor="let o of planeOptions"
+            [nzLabel]="o.text"
+            [nzValue]="o.value"
+          ></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control>
+        <nz-input-group>
+          <input
+            type="text"
+            nz-input
+            nzHasFeedback
+            formControlName="pilot_name"
+            placeholder="Pilot name"
+          />
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control>
+        <nz-input-group>
+          <input
+            type="number"
+            nz-input
+            nzHasFeedback
+            formControlName="economy_seats"
+            placeholder="Economy seats"
+          />
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control>
+        <nz-input-group>
+          <input
+            type="number"
+            nz-input
+            nzHasFeedback
+            formControlName="business_seats"
+            placeholder="Business seats"
+          />
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control>
+        <nz-input-group>
+          <input
+            type="number"
+            nz-input
+            nzHasFeedback
+            formControlName="first_seats"
+            placeholder="First seats"
+          />
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+  <nz-alert
+    *ngIf="success"
+    nzType="success"
+    nzMessage="User created!"
+    nzShowIcon
+  ></nz-alert>
+  <nz-alert
+    *ngIf="error"
+    nzType="error"
+    nzMessage="Error"
+    nzShowIcon
+    nzCloseable
+    (nzOnClose)="(onClose)"
+  ></nz-alert>
+</div>

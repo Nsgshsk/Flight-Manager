@@ -1,0 +1,24 @@
+<nz-affix nz-flex nzJustify="flex-end" nzOffsetTop="20">
+    <nz-button-group
+      ><button nz-button nzType="primary" (click)="createComponentModal()">
+        <span>Edit Plane</span>
+      </button>
+      <button
+        nz-button
+        nzType="primary"
+        nzDanger
+        (click)="showDeleteConfirm()"
+      >
+        <span>Delete Plane</span>
+      </button>
+    </nz-button-group>
+  </nz-affix>
+  <nz-descriptions nzTitle="User Info" nzBordered nzLayout="vertical">
+    <nz-descriptions-item nzTitle="Tail number">{{
+      plane.tail_number
+    }}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Type">{{
+      plane.type
+    }}</nz-descriptions-item>
+  </nz-descriptions>
+  

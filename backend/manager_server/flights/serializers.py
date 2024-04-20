@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from flights.models import PlaneType, Plane, Airport, Flight
+from django.utils.dateparse import parse_datetime
 
 class PlaneTypeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -11,7 +12,7 @@ class PlaneTypeSerializer(serializers.ModelSerializer):
         ]
 
 class PlaneSerializer(serializers.ModelSerializer):
-    type = serializers.SlugRelatedField(slug_field='iata_code', queryset=PlaneType.objects.all())
+    type = serializers.PrimaryKeyRelatedField(queryset=PlaneType.objects.all())
     
     class Meta:
         model = Plane
@@ -32,8 +33,8 @@ class AirportSerializer(serializers.ModelSerializer):
         ]
         
 class FlightSerializer(serializers.ModelSerializer):
-    departure_airport = serializers.SlugRelatedField(slug_field='name', queryset=Airport.objects.all())
-    arrival_airport = serializers.SlugRelatedField(slug_field='name', queryset=Airport.objects.all())
+    departure_airport = serializers.PrimaryKeyRelatedField(queryset=Airport.objects.all())
+    arrival_airport = serializers.PrimaryKeyRelatedField(queryset=Airport.objects.all())
     plane = serializers.PrimaryKeyRelatedField(queryset=Plane.objects.all())
     
     class Meta:
@@ -52,6 +53,6 @@ class FlightSerializer(serializers.ModelSerializer):
         ]
     
     def validate_arrival_datetime(self, value):
-        if self.initial_data['departure_datetime'] > value:
+        if parse_datetime(self.initial_data['departure_datetime']) > value:
             raise serializers.ValidationError("Arrival time can't be before departure!")
         return value

@@ -1,0 +1,55 @@
+<div>
+  <form
+    nz-form
+    [formGroup]="validateForm"
+    class="user-form"
+    (ngSubmit)="submitForm()"
+  >
+    <nz-form-item>
+      <nz-form-control nzErrorTip="Please input tail number!">
+        <nz-input-group nzPrefixIcon="user">
+          <input
+            type="text"
+            nz-input
+            nzHasFeedback
+            formControlName="tail_number"
+            placeholder="Tail number"
+          />
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control>
+        <nz-select
+          nzShowSearch
+          nzServerSearch
+          nzPlaceHolder="Plane type"
+          formControlName="type"
+          [nzShowArrow]="false"
+          [nzFilterOption]="nzFilterOption"
+          (nzOnSearch)="search($event)"
+        >
+          <nz-option
+            *ngFor="let o of planeTypeOptions"
+            [nzLabel]="o.text"
+            [nzValue]="o.value"
+          ></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+  <nz-alert
+    *ngIf="success"
+    nzType="success"
+    nzMessage="Plane created!"
+    nzShowIcon
+  ></nz-alert>
+  <nz-alert
+    *ngIf="error"
+    nzType="error"
+    nzMessage="Wrong credentials!"
+    nzShowIcon
+    nzCloseable
+    (nzOnClose)="(onClose)"
+  ></nz-alert>
+</div>

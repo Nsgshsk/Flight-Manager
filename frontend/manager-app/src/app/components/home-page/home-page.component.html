@@ -54,14 +54,12 @@
                     formControlName="departure_airport"
                     [nzShowArrow]="false"
                     [nzFilterOption]="nzFilterOption"
-                    (nzOnSearch)="onChangeDeparture($event)"
+                    (nzOnSearch)="searchAirport($event)"
                   >
                     <nz-option
-                      *ngFor="
-                        let cityCountry of filteredDepartureCityCountryList
-                      "
-                      [nzLabel]="cityCountry"
-                      [nzValue]="cityCountry"
+                      *ngFor="let cityCountry of cityCountryList"
+                      [nzLabel]="cityCountry.text"
+                      [nzValue]="cityCountry.value"
                     ></nz-option>
                   </nz-select>
                 </nz-form-control>
@@ -78,12 +76,12 @@
                     formControlName="arrival_airport"
                     [nzShowArrow]="false"
                     [nzFilterOption]="nzFilterOption"
-                    (nzOnSearch)="onChangeArrival($event)"
+                    (nzOnSearch)="searchAirport($event)"
                   >
                     <nz-option
-                      *ngFor="let cityCountry of filteredArrivalCityCountryList"
-                      [nzLabel]="cityCountry"
-                      [nzValue]="cityCountry"
+                      *ngFor="let cityCountry of cityCountryList"
+                      [nzLabel]="cityCountry.text"
+                      [nzValue]="cityCountry.value"
                     ></nz-option>
                   </nz-select>
                 </nz-form-control>
@@ -130,6 +128,7 @@
                   nzType="primary"
                   nzSize="large"
                   nzShape="round"
+                  (click)="search()"
                 >
                   <span nz-icon nzType="search" nzTheme="outline"></span>
                   Search
@@ -138,11 +137,9 @@
             </nz-form-item>
           </div>
         </form>
-        <div *ngIf="true">
-          <nz-space></nz-space>
-          <nz-divider nzText="Search Results" style="width: 90vw"></nz-divider>
-          <app-flight-list></app-flight-list>
-        </div>
+        <nz-space></nz-space>
+        <nz-divider nzText="Search Results" style="width: 90vw"></nz-divider>
+        <app-flight-list #flightList></app-flight-list>
       </div>
     </main>
   </nz-content>

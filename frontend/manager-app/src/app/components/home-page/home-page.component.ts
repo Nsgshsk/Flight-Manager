@@ -41,29 +41,17 @@ export class HomePageComponent {
     { label: 'Business', value: 2 },
     { label: 'First', value: 3 },
   ];
-  cityCountryList: string[] = [];
+  cityCountryList: Array<{ value: string; text: string }> = [];
   now = new Date();
 
   flightSearchForm: FormGroup<SearchForm>;
-  filteredDepartureCityCountryList: string[] = [];
-  filteredArrivalCityCountryList: string[] = [];
   nzFilterOption = (): boolean => true;
 
   @ViewChild('endDatePicker') endDatePicker!: NzDatePickerComponent;
+  @ViewChild('flightList') flightList!: FlightListComponent;
+  searched = false;
 
   constructor(private fb: FormBuilder, private airportService: AirportService) {
-    // airportService.getAirportList().subscribe({
-    //   next: (data) => {
-    //     this.cityCountryList = $.map(data, (value: Airport) => {
-    //       return value.city + ', ' + value.country;
-    //     });
-    //   },
-    //   error: (err) => {
-    //     console.log(err);
-    //     of([]);
-    //   },
-    // });
-    this.cityCountryList = ['Sofia', 'Varna', 'Rome'];
     this.flightSearchForm = this.fb.group({
       type: [
         1 as 1 | 2 | 3,
@@ -96,26 +84,45 @@ export class HomePageComponent {
       departure_date: [null as Date | null],
       return_date: [null as Date | null],
     });
-    this.filteredDepartureCityCountryList = this.cityCountryList;
-    this.filteredArrivalCityCountryList = this.cityCountryList;
     this.now.setHours(0, 0, 0, 0);
+  }
+
+  search() {
+    if (this.flightSearchForm.valid) {
+      this.searched = true;
+      this.flightList.loadData(this.flightSearchForm.value);
+    } else {
+      Object.values(this.flightSearchForm.controls).forEach((control) => {
+        if (control.invalid) {
+          control.markAsDirty();
+          control.updateValueAndValidity({ onlySelf: true });
+        }
+      });
+    }
+  }
+
+  searchAirport(value: string) {
+    this.airportService.getAirportList().subscribe({
+      next: (data) => {
+        const listOfOption: Array<{ value: string; text: string }> = [];
+        data.forEach((item) => {
+          if (item.city.includes(value) || item.country.includes(value))
+          listOfOption.push({
+            value: item.city + ', ' + item.country,
+            text: item.city + ', ' + item.country,
+          });
+        });
+        this.cityCountryList = listOfOption;
+      },
+      error: (err) => {
+        console.log(err);
+      },
+    });
   }
 
   onTypeChange(value: number) {
     if (value == 1 && this.flightSearchForm.controls['return_date'].value)
       this.flightSearchForm.controls['return_date'].setValue(null);
-  }
-
-  onChangeDeparture(value: string) {
-    this.filteredDepartureCityCountryList = this.cityCountryList.filter(
-      (option) => option.toLowerCase().indexOf(value.toLowerCase()) !== -1
-    );
-  }
-
-  onChangeArrival(value: string) {
-    this.filteredArrivalCityCountryList = this.cityCountryList.filter(
-      (option) => option.toLowerCase().indexOf(value.toLowerCase()) !== -1
-    );
   }
 
   disabledStartDate = (startValue: Date): boolean => {

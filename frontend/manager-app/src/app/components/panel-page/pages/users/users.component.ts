@@ -49,10 +49,6 @@ export class UsersComponent implements OnInit {
     this.loading = true;
     this.userService
       .getUserList(pageIndex, pageSize, sortField, sortOrder)
-      .pipe(
-        retry(3),
-        catchError((error) => throwError(() => error))
-      )
       .subscribe({
         next: (data) => {
           this.loading = false;

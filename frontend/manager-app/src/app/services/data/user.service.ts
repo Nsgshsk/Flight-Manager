@@ -4,6 +4,7 @@ import { AuthService } from '../authentication/auth.service';
 import { User } from '../../models/user';
 import { PaginatedResponse } from '../../models/paginated-response';
 import { environment } from '../../../environments/environment';
+import { catchError, retry, throwError } from 'rxjs';
 
 const apiUrl = environment.apiUrl;
 const apiPath = apiUrl + 'api/auth/users/';
@@ -24,26 +25,44 @@ export class UserService {
       .append('page', `${pageIndex}`)
       .append('results', `${pageSize}`)
       .append('ordering', `${sortOrder == 'descend' ? '-' : '' + sortField}`);
-    return this.http.get<PaginatedResponse>(apiPath, { params: params });
+    return this.http.get<PaginatedResponse>(apiPath, { params: params }).pipe(
+      retry(3),
+      catchError((error) => throwError(() => error))
+    );
   }
 
   getUserListWithUrl(pageUrl: string) {
-    return this.http.get<PaginatedResponse>(pageUrl);
+    return this.http.get<PaginatedResponse>(pageUrl).pipe(
+      retry(3),
+      catchError((error) => throwError(() => error))
+    );
   }
 
   createUser(userForm: Partial<User>) {
-    return this.http.post(apiPath, userForm);
+    return this.http.post(apiPath, userForm).pipe(
+      retry(3),
+      catchError((error) => throwError(() => error))
+    );
   }
 
   getUserInfo(id: number) {
-    return this.http.get<User>(apiPath + id + '/');
+    return this.http.get<User>(apiPath + id + '/').pipe(
+      retry(3),
+      catchError((error) => throwError(() => error))
+    );
   }
 
   changeUserInfo(user: Partial<User>) {
-    return this.http.patch(apiPath + user.id + '/', user);
+    return this.http.patch(apiPath + user.id + '/', user).pipe(
+      retry(3),
+      catchError((error) => throwError(() => error))
+    );
   }
 
   removeUser(user: User) {
-    return this.http.delete(apiPath + user.id + '/');
+    return this.http.delete(apiPath + user.id + '/').pipe(
+      retry(3),
+      catchError((error) => throwError(() => error))
+    );
   }
 }

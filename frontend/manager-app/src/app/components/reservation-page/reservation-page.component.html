@@ -1,1 +1,158 @@
-<p>reservation-page works!</p>
+<form
+  nz-form
+  [formGroup]="validationForm"
+  (ngSubmit)="submitForm()"
+  style="height: 100%"
+>
+  <nz-form-item>
+    <nz-form-control>
+      <nz-input-group>
+        <input
+          type="text"
+          nz-input
+          nzHasFeedback
+          formControlName="email"
+          placeholder="Email"
+        />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <ng-container formArrayName="reservations">
+      <ng-container *ngFor="let item of reservations.controls; let i = index">
+        <div [formGroup]="getFormGroup(item)">
+          <nz-form-label>Person {{i + 1}}</nz-form-label>
+          <nz-space></nz-space>
+          <nz-form-item>
+            <nz-form-control>
+              <nz-input-group>
+                <input
+                  type="text"
+                  nz-input
+                  nzHasFeedback
+                  formControlName="first_name"
+                  placeholder="First name"
+                />
+              </nz-input-group>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-control>
+              <nz-input-group>
+                <input
+                  type="text"
+                  nz-input
+                  nzHasFeedback
+                  formControlName="middle_name"
+                  placeholder="Middle name"
+                />
+              </nz-input-group>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-control>
+              <nz-input-group>
+                <input
+                  type="text"
+                  nz-input
+                  nzHasFeedback
+                  formControlName="last_name"
+                  placeholder="Last name"
+                />
+              </nz-input-group>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-control>
+              <nz-input-group>
+                <input
+                  type="text"
+                  nz-input
+                  nzHasFeedback
+                  formControlName="egn"
+                  placeholder="EGN"
+                />
+              </nz-input-group>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-control>
+              <nz-input-group>
+                <input
+                  type="text"
+                  nz-input
+                  nzHasFeedback
+                  formControlName="phone_number"
+                  placeholder="Phone numbers"
+                />
+              </nz-input-group>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-control>
+              <nz-select
+                nzShowSearch
+                nzServerSearch
+                nzPlaceHolder="Nationality"
+                formControlName="nationality"
+                [nzShowArrow]="false"
+                [nzFilterOption]="nzFilterOption"
+                (nzOnSearch)="searchNationality($event)"
+              >
+                <nz-option
+                  *ngFor="let o of nationalityOptions"
+                  [nzLabel]="o.name"
+                  [nzValue]="o.name"
+                ></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-control>
+              <nz-select
+                formControlName="type"
+                [nzOptions]="ticketClasses"
+              ></nz-select>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item></nz-form-item>
+          <nz-form-split></nz-form-split>
+        </div>
+      </ng-container>
+      <button
+        nz-button
+        nzType="dashed"
+        class="dynamic-delete-button"
+        (click)="removeField($event)"
+      >
+        <span nz-icon nzType="close"></span>
+      </button>
+    </ng-container>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-control
+      [nzXs]="{ span: 24, offset: 0 }"
+      [nzSm]="{ span: 20, offset: 4 }"
+    >
+      <button
+        nz-button
+        nzType="dashed"
+        class="add-button"
+        (click)="addField($event)"
+      >
+        <span nz-icon nzType="plus"></span>
+        Add field
+      </button>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-control
+      [nzXs]="{ span: 24, offset: 0 }"
+      [nzSm]="{ span: 20, offset: 4 }"
+    >
+      <button nz-button nzType="primary" (click)="submitForm">Submit</button>
+    </nz-form-control>
+  </nz-form-item>
+</form>

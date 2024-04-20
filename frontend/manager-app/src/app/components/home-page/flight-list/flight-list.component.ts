@@ -1,32 +1,40 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { NgZorroModule } from '../../shared/NgZorro.module';
-
-interface ItemData {
-  href: string;
-  title: string;
-  n: number
-}
+import { AnnoFlightService } from '../../../services/data/anno-flight.service';
+import { Flight } from '../../../models/flight';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-flight-list',
   standalone: true,
-  imports: [CommonModule, NgZorroModule],
+  imports: [CommonModule, NgZorroModule, RouterModule],
   templateUrl: './flight-list.component.html',
   styleUrl: './flight-list.component.css',
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class FlightListComponent implements OnInit {
-  data: ItemData[] = [];
+  data: Flight[] = [];
 
-  ngOnInit(): void {
-    this.loadData(1);
-  }
+  constructor(private annoFlightService: AnnoFlightService) {}
 
-  loadData(pi: number): void {
-    this.data = new Array(5).fill({}).map((_, index) => ({
-      href: 'http://ant.design',
-      title: `ant design part ${index} (page: ${pi})`,
-      n: index
-    }));
+  ngOnInit(): void {}
+
+  loadData(
+    params: Partial<{
+      type: 1 | 2 | 3 | null;
+      class: 1 | 2 | 3 | null;
+      departure_airport: string | null;
+      arrival_airport: string | null;
+      departure_date: Date | null;
+      return_date: Date | null;
+    }>
+  ): void {
+    this.annoFlightService.getFlightList(1, 100, params).subscribe({
+      next: (value) => {
+        this.data = value.results as Flight[];
+      },
+      error: (error) => console.error(error),
+    });
   }
 }

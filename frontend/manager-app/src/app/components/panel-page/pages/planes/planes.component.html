@@ -1,1 +1,28 @@
-<p>planes works!</p>
+<nz-affix nz-flex nzJustify="flex-end" nzOffsetTop="20">
+    <button nz-button nzType="primary" (click)="createComponentModal()">
+      <span>Creat User</span>
+    </button>
+  </nz-affix>
+  <nz-table
+    nzShowSizeChanger
+    [nzData]="planeList"
+    [nzFrontPagination]="false"
+    [nzLoading]="loading"
+    [nzTotal]="total"
+    [nzPageSize]="pageSize"
+    [nzPageIndex]="pageIndex"
+    (nzQueryParams)="onQueryParamsChange($event)"
+  >
+    <thead>
+      <tr>
+        <th nzColumnKey="tail_number" [nzSortFn]="true">Tail number</th>
+        <th nzColumnKey="type" [nzSortFn]="true">Type</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let plane of planeList">
+        <td><a [routerLink]="['/', 'admin', 'planes', plane.tail_number]">{{ plane.tail_number }}</a></td>
+        <td>{{ plane.type }}</td>
+      </tr>
+    </tbody>
+  </nz-table>

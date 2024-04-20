@@ -1,0 +1,52 @@
+<nz-affix nz-flex nzJustify="flex-end" nzOffsetTop="20">
+  <nz-button-group>
+    <button nz-button nzType="primary" nzDanger (click)="showDeleteConfirm()">
+      <span>Delete User</span>
+    </button>
+  </nz-button-group>
+</nz-affix>
+<nz-descriptions nzTitle="Customer Info" nzBordered nzLayout="vertical">
+  <nz-descriptions-item nzTitle="Email">{{
+    customer.email
+  }}</nz-descriptions-item>
+  <nz-descriptions-item nzTitle="Created">{{
+    customer.created
+  }}</nz-descriptions-item>
+  <nz-descriptions-item nzTitle="Flight">{{
+    customer.flight
+  }}</nz-descriptions-item>
+  <nz-descriptions-item nzTitle="Status">{{
+    customer.status
+  }}</nz-descriptions-item>
+</nz-descriptions>
+<nz-descriptions nzTitle="Reservations" nzBordered nzLayout="vertical">
+  @for (item of reservations; track $index) {
+  <nz-descriptions
+    nzTitle="{{ item.first_name + ' ' + item.last_name }}"
+    nzBordered
+    nzLayout="vertical"
+  >
+    <nz-descriptions-item nzTitle="First name">{{
+      item.first_name
+    }}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Middle name">{{
+      item.middle_name
+    }}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Last name">{{
+      item.last_name
+    }}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="EGN">
+      {{ item.egn }}
+    </nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Phone number">{{
+      item.phone_number
+    }}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Nationality">{{
+      item.nationality
+    }}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Ticket type">{{
+      item.type
+    }}</nz-descriptions-item>
+  </nz-descriptions>
+  }
+</nz-descriptions>

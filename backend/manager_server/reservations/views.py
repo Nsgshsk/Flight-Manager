@@ -198,20 +198,22 @@ class CustomerRequests(ListModelMixin, RetrieveModelMixin, DestroyModelMixin, Ge
         customer_data = request.data['customer']
         reservation_data_list = request.data['reservations']
         
-        customer = CustomerRequestSerializer(customer_data)
+        print(customer_data)
+        customer = CustomerRequestSerializer(data=customer_data)
         if not customer.is_valid():
             return Response(data=customer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
+        print('We reached here')
         if len(reservation_data_list) > 10:
             return Response(data={'message': 'Too many reservations! (The max is 10.)'}, status=status.HTTP_400_BAD_REQUEST)
-        
+        print('We reached here')
         customer.save()
         for reservation_data in reservation_data_list:
-            reservation_data['customer'] = customer.validated_data['id']
+            reservation_data['customer_request'] = customer.validated_data['id']
             reservation = ReservationSerializer(reservation_data)
             if reservation.is_valid():
                 reservation.save()
             else:
+                print('We reached here')
                 CustomerRequest.objects.filter(pk=customer.validated_data['id']).delete()
                 return Response(data=reservation.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -300,14 +302,6 @@ class CustomerRequests(ListModelMixin, RetrieveModelMixin, DestroyModelMixin, Ge
             return Response({'message': 'Request confirmed!'}, status=status.HTTP_200_OK)
         else:
             return Response({'message': 'Invalid request!'}, status=status.HTTP_400_BAD_REQUEST)
-
-class NationalitiesOld(APIView):
-    permission_classes = [AllowAny]
-    serializer_class = NationalitySerializer
-    
-    def get(self, request):
-        serializer = NationalitySerializer(Nationality.objects.all(), many=True)
-        return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 class Nationalities(ListAPIView):
     queryset = Nationality.objects.all()

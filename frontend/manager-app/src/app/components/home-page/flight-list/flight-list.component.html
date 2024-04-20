@@ -11,28 +11,30 @@
       [nzXs]="24"
     >
       <nz-list-item>
-        <nz-card
-          class="flightCard"
-          nzHoverable
-          [nzCover]="coverTemplate"
-          [nzActions]="[actionSetting, actionEdit, actionEllipsis]"
-        >
-          <nz-card-meta
-            nzTitle="Europe Street beat"
-            nzDescription="www.instagram.com"
-          ></nz-card-meta>
-        </nz-card>
+        <a [routerLink]="['/', item.id]">
+          <nz-card
+            class="flightCard"
+            nzHoverable
+            [nzCover]="coverTemplate"
+            [nzActions]="[actionSetting, actionEdit, actionEllipsis]"
+          >
+            <nz-card-meta
+              nzTitle="Europe Street beat"
+              nzDescription="www.instagram.com"
+            ></nz-card-meta>
+          </nz-card>
+        </a>
       </nz-list-item>
       <ng-template #actionSetting>
         <span nz-icon nzType="crown"></span>
-        {{ item.n }}
+        {{ item.first_seats }}
       </ng-template>
       <ng-template #actionEdit>
         <span nz-icon nzType="gold"></span>
-        {{ item.n }}
+        {{ item.business_seats }}
       </ng-template>
       <ng-template #actionEllipsis>
-        <span nz-icon nzType="wallet"></span>{{ item.n }}
+        <span nz-icon nzType="wallet"></span>{{ item.economy_seats }}
       </ng-template>
     </div>
     }
