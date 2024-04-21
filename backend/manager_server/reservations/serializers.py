@@ -15,6 +15,14 @@ class CustomerRequestSerializer(serializers.ModelSerializer):
             'flight_id',
             'status'
         ]
+    
+    def create(self, validated_data):
+        print(validated_data)
+        tmp = validated_data['flight_id']
+        validated_data['flight_id'] = tmp.id
+        instance = self.Meta.model(**validated_data)
+        instance.save()
+        return instance
 
 class NationalitySerializer(serializers.ModelSerializer):
     class Meta:
@@ -36,7 +44,7 @@ class ReservationSerializer(serializers.ModelSerializer):
             'first_name',
             'middle_name',
             'egn',
-            'phone_number'
+            'phone_number',
             'nationality',
             'type'
         ]

@@ -18,6 +18,8 @@ from reservations.serializers import CustomerRequestSerializer, NationalitySeria
 from django.core.mail import send_mail
 from manager_server.paginators import ResultsSetPagination
 
+from datetime import datetime
+
 TYPE_CHOICES = { 1: 'Economy', 2: 'Business', 3: 'First'}
 # Create your views here.
 class CustomerRequestsOld(APIView):
@@ -207,8 +209,9 @@ class CustomerRequests(ListModelMixin, RetrieveModelMixin, DestroyModelMixin, Ge
             return Response(data={'message': 'Too many reservations! (The max is 10.)'}, status=status.HTTP_400_BAD_REQUEST)
         print('We reached here')
         customer.save()
+        customer = CustomerRequest.objects.filter(created=datetime.now()).get(email=customer.validated_data['email'])
         for reservation_data in reservation_data_list:
-            reservation_data['customer_request'] = customer.validated_data['id']
+            reservation_data['customer_request'] = customer.id
             reservation = ReservationSerializer(reservation_data)
             if reservation.is_valid():
                 reservation.save()
